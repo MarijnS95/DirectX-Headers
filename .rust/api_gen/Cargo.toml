@@ -1,0 +1,10 @@
+[package]
+name = "api_gen"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+serde = "1.0.147"
+windows-bindgen = "0.44"
+windows-metadata = "0.44"

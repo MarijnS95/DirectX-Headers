@@ -21,5 +21,7 @@
 /out
 /CMakeUserPresets.json
 /build*
+/target
+/Cargo.lock
 /.metadata/obj
 /.metadata/bin
