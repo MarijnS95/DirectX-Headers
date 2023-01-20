@@ -442,6 +442,8 @@ impl ::core::fmt::Debug for ID3D12CommandAllocator {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12CommandAllocator {}
+unsafe impl ::core::marker::Sync for ID3D12CommandAllocator {}
 unsafe impl ::windows::core::Vtable for ID3D12CommandAllocator {
     type Vtable = ID3D12CommandAllocator_Vtbl;
 }
@@ -561,6 +563,8 @@ impl ::core::fmt::Debug for ID3D12CommandList {
         f.debug_tuple("ID3D12CommandList").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12CommandList {}
+unsafe impl ::core::marker::Sync for ID3D12CommandList {}
 unsafe impl ::windows::core::Vtable for ID3D12CommandList {
     type Vtable = ID3D12CommandList_Vtbl;
 }
@@ -825,6 +829,8 @@ impl ::core::fmt::Debug for ID3D12CommandQueue {
         f.debug_tuple("ID3D12CommandQueue").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12CommandQueue {}
+unsafe impl ::core::marker::Sync for ID3D12CommandQueue {}
 unsafe impl ::windows::core::Vtable for ID3D12CommandQueue {
     type Vtable = ID3D12CommandQueue_Vtbl;
 }
@@ -1012,6 +1018,8 @@ impl ::core::fmt::Debug for ID3D12CommandSignature {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12CommandSignature {}
+unsafe impl ::core::marker::Sync for ID3D12CommandSignature {}
 unsafe impl ::windows::core::Vtable for ID3D12CommandSignature {
     type Vtable = ID3D12CommandSignature_Vtbl;
 }
@@ -1120,6 +1128,8 @@ impl ::core::fmt::Debug for ID3D12CompatibilityDevice {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12CompatibilityDevice {}
+unsafe impl ::core::marker::Sync for ID3D12CompatibilityDevice {}
 unsafe impl ::windows::core::Vtable for ID3D12CompatibilityDevice {
     type Vtable = ID3D12CompatibilityDevice_Vtbl;
 }
@@ -2658,6 +2668,8 @@ impl ::core::fmt::Debug for ID3D12DescriptorHeap {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DescriptorHeap {}
+unsafe impl ::core::marker::Sync for ID3D12DescriptorHeap {}
 unsafe impl ::windows::core::Vtable for ID3D12DescriptorHeap {
     type Vtable = ID3D12DescriptorHeap_Vtbl;
 }
@@ -3339,6 +3351,8 @@ impl ::core::fmt::Debug for ID3D12Device {
         f.debug_tuple("ID3D12Device").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device {}
+unsafe impl ::core::marker::Sync for ID3D12Device {}
 unsafe impl ::windows::core::Vtable for ID3D12Device {
     type Vtable = ID3D12Device_Vtbl;
 }
@@ -4360,6 +4374,8 @@ impl ::core::fmt::Debug for ID3D12Device1 {
         f.debug_tuple("ID3D12Device1").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device1 {}
+unsafe impl ::core::marker::Sync for ID3D12Device1 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device1 {
     type Vtable = ID3D12Device1_Vtbl;
 }
@@ -6357,6 +6373,8 @@ impl ::core::fmt::Debug for ID3D12Device10 {
         f.debug_tuple("ID3D12Device10").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device10 {}
+unsafe impl ::core::marker::Sync for ID3D12Device10 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device10 {
     type Vtable = ID3D12Device10_Vtbl;
 }
@@ -8459,6 +8477,8 @@ impl ::core::fmt::Debug for ID3D12Device11 {
         f.debug_tuple("ID3D12Device11").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device11 {}
+unsafe impl ::core::marker::Sync for ID3D12Device11 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device11 {
     type Vtable = ID3D12Device11_Vtbl;
 }
@@ -9321,6 +9341,8 @@ impl ::core::fmt::Debug for ID3D12Device2 {
         f.debug_tuple("ID3D12Device2").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device2 {}
+unsafe impl ::core::marker::Sync for ID3D12Device2 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device2 {
     type Vtable = ID3D12Device2_Vtbl;
 }
@@ -10287,6 +10309,8 @@ impl ::core::fmt::Debug for ID3D12Device3 {
         f.debug_tuple("ID3D12Device3").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device3 {}
+unsafe impl ::core::marker::Sync for ID3D12Device3 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device3 {
     type Vtable = ID3D12Device3_Vtbl;
 }
@@ -11442,6 +11466,8 @@ impl ::core::fmt::Debug for ID3D12Device4 {
         f.debug_tuple("ID3D12Device4").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device4 {}
+unsafe impl ::core::marker::Sync for ID3D12Device4 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device4 {
     type Vtable = ID3D12Device4_Vtbl;
 }
@@ -12792,6 +12818,8 @@ impl ::core::fmt::Debug for ID3D12Device5 {
         f.debug_tuple("ID3D12Device5").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device5 {}
+unsafe impl ::core::marker::Sync for ID3D12Device5 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device5 {
     type Vtable = ID3D12Device5_Vtbl;
 }
@@ -14233,6 +14261,8 @@ impl ::core::fmt::Debug for ID3D12Device6 {
         f.debug_tuple("ID3D12Device6").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device6 {}
+unsafe impl ::core::marker::Sync for ID3D12Device6 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device6 {
     type Vtable = ID3D12Device6_Vtbl;
 }
@@ -15735,6 +15765,8 @@ impl ::core::fmt::Debug for ID3D12Device7 {
         f.debug_tuple("ID3D12Device7").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device7 {}
+unsafe impl ::core::marker::Sync for ID3D12Device7 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device7 {
     type Vtable = ID3D12Device7_Vtbl;
 }
@@ -17420,6 +17452,8 @@ impl ::core::fmt::Debug for ID3D12Device8 {
         f.debug_tuple("ID3D12Device8").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device8 {}
+unsafe impl ::core::marker::Sync for ID3D12Device8 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device8 {
     type Vtable = ID3D12Device8_Vtbl;
 }
@@ -19260,6 +19294,8 @@ impl ::core::fmt::Debug for ID3D12Device9 {
         f.debug_tuple("ID3D12Device9").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Device9 {}
+unsafe impl ::core::marker::Sync for ID3D12Device9 {}
 unsafe impl ::windows::core::Vtable for ID3D12Device9 {
     type Vtable = ID3D12Device9_Vtbl;
 }
@@ -19380,6 +19416,8 @@ impl ::core::fmt::Debug for ID3D12DeviceChild {
         f.debug_tuple("ID3D12DeviceChild").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceChild {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceChild {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceChild {
     type Vtable = ID3D12DeviceChild_Vtbl;
 }
@@ -19473,6 +19511,8 @@ impl ::core::fmt::Debug for ID3D12DeviceConfiguration {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceConfiguration {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceConfiguration {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceConfiguration {
     type Vtable = ID3D12DeviceConfiguration_Vtbl;
 }
@@ -19605,6 +19645,8 @@ impl ::core::fmt::Debug for ID3D12DeviceFactory {
         f.debug_tuple("ID3D12DeviceFactory").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceFactory {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceFactory {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceFactory {
     type Vtable = ID3D12DeviceFactory_Vtbl;
 }
@@ -19690,6 +19732,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedData {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedData {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedData {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedData {
     type Vtable = ID3D12DeviceRemovedExtendedData_Vtbl;
 }
@@ -19780,6 +19824,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedData1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedData1 {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedData1 {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedData1 {
     type Vtable = ID3D12DeviceRemovedExtendedData1_Vtbl;
 }
@@ -19892,6 +19938,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedData2 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedData2 {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedData2 {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedData2 {
     type Vtable = ID3D12DeviceRemovedExtendedData2_Vtbl;
 }
@@ -19954,6 +20002,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedDataSettings {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedDataSettings {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedDataSettings {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedDataSettings {
     type Vtable = ID3D12DeviceRemovedExtendedDataSettings_Vtbl;
 }
@@ -20026,6 +20076,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedDataSettings1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedDataSettings1 {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedDataSettings1 {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedDataSettings1 {
     type Vtable = ID3D12DeviceRemovedExtendedDataSettings1_Vtbl;
 }
@@ -20104,6 +20156,8 @@ impl ::core::fmt::Debug for ID3D12DeviceRemovedExtendedDataSettings2 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12DeviceRemovedExtendedDataSettings2 {}
+unsafe impl ::core::marker::Sync for ID3D12DeviceRemovedExtendedDataSettings2 {}
 unsafe impl ::windows::core::Vtable for ID3D12DeviceRemovedExtendedDataSettings2 {
     type Vtable = ID3D12DeviceRemovedExtendedDataSettings2_Vtbl;
 }
@@ -20254,6 +20308,8 @@ impl ::core::fmt::Debug for ID3D12Fence {
         f.debug_tuple("ID3D12Fence").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Fence {}
+unsafe impl ::core::marker::Sync for ID3D12Fence {}
 unsafe impl ::windows::core::Vtable for ID3D12Fence {
     type Vtable = ID3D12Fence_Vtbl;
 }
@@ -20424,6 +20480,8 @@ impl ::core::fmt::Debug for ID3D12Fence1 {
         f.debug_tuple("ID3D12Fence1").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Fence1 {}
+unsafe impl ::core::marker::Sync for ID3D12Fence1 {}
 unsafe impl ::windows::core::Vtable for ID3D12Fence1 {
     type Vtable = ID3D12Fence1_Vtbl;
 }
@@ -20467,6 +20525,8 @@ impl ::core::fmt::Debug for ID3D12FunctionParameterReflection {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12FunctionParameterReflection {}
+unsafe impl ::core::marker::Sync for ID3D12FunctionParameterReflection {}
 unsafe impl ::windows::core::Vtable for ID3D12FunctionParameterReflection {
     type Vtable = ID3D12FunctionParameterReflection_Vtbl;
 }
@@ -20576,6 +20636,8 @@ impl ::core::fmt::Debug for ID3D12FunctionReflection {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12FunctionReflection {}
+unsafe impl ::core::marker::Sync for ID3D12FunctionReflection {}
 unsafe impl ::windows::core::Vtable for ID3D12FunctionReflection {
     type Vtable = ID3D12FunctionReflection_Vtbl;
 }
@@ -21390,6 +21452,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList {
     type Vtable = ID3D12GraphicsCommandList_Vtbl;
 }
@@ -22634,6 +22698,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList1 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList1 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList1 {
     type Vtable = ID3D12GraphicsCommandList1_Vtbl;
 }
@@ -23729,6 +23795,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList2 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList2 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList2 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList2 {
     type Vtable = ID3D12GraphicsCommandList2_Vtbl;
 }
@@ -24875,6 +24943,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList3 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList3 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList3 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList3 {
     type Vtable = ID3D12GraphicsCommandList3_Vtbl;
 }
@@ -26199,6 +26269,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList4 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList4 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList4 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList4 {
     type Vtable = ID3D12GraphicsCommandList4_Vtbl;
 }
@@ -27665,6 +27737,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList5 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList5 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList5 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList5 {
     type Vtable = ID3D12GraphicsCommandList5_Vtbl;
 }
@@ -29187,6 +29261,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList6 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList6 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList6 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList6 {
     type Vtable = ID3D12GraphicsCommandList6_Vtbl;
 }
@@ -30790,6 +30866,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList7 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList7 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList7 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList7 {
     type Vtable = ID3D12GraphicsCommandList7_Vtbl;
 }
@@ -32479,6 +32557,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList8 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList8 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList8 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList8 {
     type Vtable = ID3D12GraphicsCommandList8_Vtbl;
 }
@@ -34270,6 +34350,8 @@ impl ::core::fmt::Debug for ID3D12GraphicsCommandList9 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12GraphicsCommandList9 {}
+unsafe impl ::core::marker::Sync for ID3D12GraphicsCommandList9 {}
 unsafe impl ::windows::core::Vtable for ID3D12GraphicsCommandList9 {
     type Vtable = ID3D12GraphicsCommandList9_Vtbl;
 }
@@ -34410,6 +34492,8 @@ impl ::core::fmt::Debug for ID3D12Heap {
         f.debug_tuple("ID3D12Heap").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Heap {}
+unsafe impl ::core::marker::Sync for ID3D12Heap {}
 unsafe impl ::windows::core::Vtable for ID3D12Heap {
     type Vtable = ID3D12Heap_Vtbl;
 }
@@ -34562,6 +34646,8 @@ impl ::core::fmt::Debug for ID3D12Heap1 {
         f.debug_tuple("ID3D12Heap1").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Heap1 {}
+unsafe impl ::core::marker::Sync for ID3D12Heap1 {}
 unsafe impl ::windows::core::Vtable for ID3D12Heap1 {
     type Vtable = ID3D12Heap1_Vtbl;
 }
@@ -35428,6 +35514,8 @@ impl ::core::fmt::Debug for ID3D12LibraryReflection {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12LibraryReflection {}
+unsafe impl ::core::marker::Sync for ID3D12LibraryReflection {}
 unsafe impl ::windows::core::Vtable for ID3D12LibraryReflection {
     type Vtable = ID3D12LibraryReflection_Vtbl;
 }
@@ -35476,6 +35564,8 @@ impl ::core::fmt::Debug for ID3D12LifetimeOwner {
         f.debug_tuple("ID3D12LifetimeOwner").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12LifetimeOwner {}
+unsafe impl ::core::marker::Sync for ID3D12LifetimeOwner {}
 unsafe impl ::windows::core::Vtable for ID3D12LifetimeOwner {
     type Vtable = ID3D12LifetimeOwner_Vtbl;
 }
@@ -35604,6 +35694,8 @@ impl ::core::fmt::Debug for ID3D12LifetimeTracker {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12LifetimeTracker {}
+unsafe impl ::core::marker::Sync for ID3D12LifetimeTracker {}
 unsafe impl ::windows::core::Vtable for ID3D12LifetimeTracker {
     type Vtable = ID3D12LifetimeTracker_Vtbl;
 }
@@ -35741,6 +35833,8 @@ impl ::core::fmt::Debug for ID3D12MetaCommand {
         f.debug_tuple("ID3D12MetaCommand").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12MetaCommand {}
+unsafe impl ::core::marker::Sync for ID3D12MetaCommand {}
 unsafe impl ::windows::core::Vtable for ID3D12MetaCommand {
     type Vtable = ID3D12MetaCommand_Vtbl;
 }
@@ -35832,6 +35926,8 @@ impl ::core::fmt::Debug for ID3D12Object {
         f.debug_tuple("ID3D12Object").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Object {}
+unsafe impl ::core::marker::Sync for ID3D12Object {}
 unsafe impl ::windows::core::Vtable for ID3D12Object {
     type Vtable = ID3D12Object_Vtbl;
 }
@@ -35967,6 +36063,8 @@ impl ::core::fmt::Debug for ID3D12Pageable {
         f.debug_tuple("ID3D12Pageable").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Pageable {}
+unsafe impl ::core::marker::Sync for ID3D12Pageable {}
 unsafe impl ::windows::core::Vtable for ID3D12Pageable {
     type Vtable = ID3D12Pageable_Vtbl;
 }
@@ -36150,6 +36248,8 @@ impl ::core::fmt::Debug for ID3D12PipelineLibrary {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12PipelineLibrary {}
+unsafe impl ::core::marker::Sync for ID3D12PipelineLibrary {}
 unsafe impl ::windows::core::Vtable for ID3D12PipelineLibrary {
     type Vtable = ID3D12PipelineLibrary_Vtbl;
 }
@@ -36389,6 +36489,8 @@ impl ::core::fmt::Debug for ID3D12PipelineLibrary1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12PipelineLibrary1 {}
+unsafe impl ::core::marker::Sync for ID3D12PipelineLibrary1 {}
 unsafe impl ::windows::core::Vtable for ID3D12PipelineLibrary1 {
     type Vtable = ID3D12PipelineLibrary1_Vtbl;
 }
@@ -36528,6 +36630,8 @@ impl ::core::fmt::Debug for ID3D12PipelineState {
         f.debug_tuple("ID3D12PipelineState").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12PipelineState {}
+unsafe impl ::core::marker::Sync for ID3D12PipelineState {}
 unsafe impl ::windows::core::Vtable for ID3D12PipelineState {
     type Vtable = ID3D12PipelineState_Vtbl;
 }
@@ -36683,6 +36787,8 @@ impl ::core::fmt::Debug for ID3D12ProtectedResourceSession {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ProtectedResourceSession {}
+unsafe impl ::core::marker::Sync for ID3D12ProtectedResourceSession {}
 unsafe impl ::windows::core::Vtable for ID3D12ProtectedResourceSession {
     type Vtable = ID3D12ProtectedResourceSession_Vtbl;
 }
@@ -36856,6 +36962,8 @@ impl ::core::fmt::Debug for ID3D12ProtectedResourceSession1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ProtectedResourceSession1 {}
+unsafe impl ::core::marker::Sync for ID3D12ProtectedResourceSession1 {}
 unsafe impl ::windows::core::Vtable for ID3D12ProtectedResourceSession1 {
     type Vtable = ID3D12ProtectedResourceSession1_Vtbl;
 }
@@ -36995,6 +37103,8 @@ impl ::core::fmt::Debug for ID3D12ProtectedSession {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ProtectedSession {}
+unsafe impl ::core::marker::Sync for ID3D12ProtectedSession {}
 unsafe impl ::windows::core::Vtable for ID3D12ProtectedSession {
     type Vtable = ID3D12ProtectedSession_Vtbl;
 }
@@ -37124,6 +37234,8 @@ impl ::core::fmt::Debug for ID3D12QueryHeap {
         f.debug_tuple("ID3D12QueryHeap").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12QueryHeap {}
+unsafe impl ::core::marker::Sync for ID3D12QueryHeap {}
 unsafe impl ::windows::core::Vtable for ID3D12QueryHeap {
     type Vtable = ID3D12QueryHeap_Vtbl;
 }
@@ -37332,6 +37444,8 @@ impl ::core::fmt::Debug for ID3D12Resource {
         f.debug_tuple("ID3D12Resource").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Resource {}
+unsafe impl ::core::marker::Sync for ID3D12Resource {}
 unsafe impl ::windows::core::Vtable for ID3D12Resource {
     type Vtable = ID3D12Resource_Vtbl;
 }
@@ -37603,6 +37717,8 @@ impl ::core::fmt::Debug for ID3D12Resource1 {
         f.debug_tuple("ID3D12Resource1").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Resource1 {}
+unsafe impl ::core::marker::Sync for ID3D12Resource1 {}
 unsafe impl ::windows::core::Vtable for ID3D12Resource1 {
     type Vtable = ID3D12Resource1_Vtbl;
 }
@@ -37862,6 +37978,8 @@ impl ::core::fmt::Debug for ID3D12Resource2 {
         f.debug_tuple("ID3D12Resource2").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Resource2 {}
+unsafe impl ::core::marker::Sync for ID3D12Resource2 {}
 unsafe impl ::windows::core::Vtable for ID3D12Resource2 {
     type Vtable = ID3D12Resource2_Vtbl;
 }
@@ -37980,6 +38098,8 @@ impl ::core::fmt::Debug for ID3D12RootSignature {
         f.debug_tuple("ID3D12RootSignature").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12RootSignature {}
+unsafe impl ::core::marker::Sync for ID3D12RootSignature {}
 unsafe impl ::windows::core::Vtable for ID3D12RootSignature {
     type Vtable = ID3D12RootSignature_Vtbl;
 }
@@ -38020,6 +38140,8 @@ impl ::core::fmt::Debug for ID3D12RootSignatureDeserializer {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12RootSignatureDeserializer {}
+unsafe impl ::core::marker::Sync for ID3D12RootSignatureDeserializer {}
 unsafe impl ::windows::core::Vtable for ID3D12RootSignatureDeserializer {
     type Vtable = ID3D12RootSignatureDeserializer_Vtbl;
 }
@@ -38072,6 +38194,8 @@ impl ::core::fmt::Debug for ID3D12SDKConfiguration {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12SDKConfiguration {}
+unsafe impl ::core::marker::Sync for ID3D12SDKConfiguration {}
 unsafe impl ::windows::core::Vtable for ID3D12SDKConfiguration {
     type Vtable = ID3D12SDKConfiguration_Vtbl;
 }
@@ -38155,6 +38279,8 @@ impl ::core::fmt::Debug for ID3D12SDKConfiguration1 {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12SDKConfiguration1 {}
+unsafe impl ::core::marker::Sync for ID3D12SDKConfiguration1 {}
 unsafe impl ::windows::core::Vtable for ID3D12SDKConfiguration1 {
     type Vtable = ID3D12SDKConfiguration1_Vtbl;
 }
@@ -38324,6 +38450,8 @@ impl ::core::fmt::Debug for ID3D12ShaderCacheSession {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ShaderCacheSession {}
+unsafe impl ::core::marker::Sync for ID3D12ShaderCacheSession {}
 unsafe impl ::windows::core::Vtable for ID3D12ShaderCacheSession {
     type Vtable = ID3D12ShaderCacheSession_Vtbl;
 }
@@ -38546,6 +38674,8 @@ impl ::core::fmt::Debug for ID3D12ShaderReflection {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ShaderReflection {}
+unsafe impl ::core::marker::Sync for ID3D12ShaderReflection {}
 unsafe impl ::windows::core::Vtable for ID3D12ShaderReflection {
     type Vtable = ID3D12ShaderReflection_Vtbl;
 }
@@ -38684,6 +38814,8 @@ impl ::core::fmt::Debug for ID3D12ShaderReflectionConstantBuffer {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ShaderReflectionConstantBuffer {}
+unsafe impl ::core::marker::Sync for ID3D12ShaderReflectionConstantBuffer {}
 unsafe impl ::windows::core::Vtable for ID3D12ShaderReflectionConstantBuffer {
     type Vtable = ID3D12ShaderReflectionConstantBuffer_Vtbl;
 }
@@ -38816,6 +38948,8 @@ impl ::core::fmt::Debug for ID3D12ShaderReflectionType {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ShaderReflectionType {}
+unsafe impl ::core::marker::Sync for ID3D12ShaderReflectionType {}
 unsafe impl ::windows::core::Vtable for ID3D12ShaderReflectionType {
     type Vtable = ID3D12ShaderReflectionType_Vtbl;
 }
@@ -38911,6 +39045,8 @@ impl ::core::fmt::Debug for ID3D12ShaderReflectionVariable {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12ShaderReflectionVariable {}
+unsafe impl ::core::marker::Sync for ID3D12ShaderReflectionVariable {}
 unsafe impl ::windows::core::Vtable for ID3D12ShaderReflectionVariable {
     type Vtable = ID3D12ShaderReflectionVariable_Vtbl;
 }
@@ -39133,6 +39269,8 @@ impl ::core::fmt::Debug for ID3D12StateObject {
         f.debug_tuple("ID3D12StateObject").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12StateObject {}
+unsafe impl ::core::marker::Sync for ID3D12StateObject {}
 unsafe impl ::windows::core::Vtable for ID3D12StateObject {
     type Vtable = ID3D12StateObject_Vtbl;
 }
@@ -39197,6 +39335,8 @@ impl ::core::fmt::Debug for ID3D12StateObjectProperties {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12StateObjectProperties {}
+unsafe impl ::core::marker::Sync for ID3D12StateObjectProperties {}
 unsafe impl ::windows::core::Vtable for ID3D12StateObjectProperties {
     type Vtable = ID3D12StateObjectProperties_Vtbl;
 }
@@ -39287,6 +39427,8 @@ impl ::core::fmt::Debug for ID3D12SwapChainAssistant {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12SwapChainAssistant {}
+unsafe impl ::core::marker::Sync for ID3D12SwapChainAssistant {}
 unsafe impl ::windows::core::Vtable for ID3D12SwapChainAssistant {
     type Vtable = ID3D12SwapChainAssistant_Vtbl;
 }
@@ -39353,6 +39495,8 @@ impl ::core::fmt::Debug for ID3D12Tools {
         f.debug_tuple("ID3D12Tools").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12Tools {}
+unsafe impl ::core::marker::Sync for ID3D12Tools {}
 unsafe impl ::windows::core::Vtable for ID3D12Tools {
     type Vtable = ID3D12Tools_Vtbl;
 }
@@ -39418,6 +39562,8 @@ impl ::core::fmt::Debug for ID3D12VersionedRootSignatureDeserializer {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12VersionedRootSignatureDeserializer {}
+unsafe impl ::core::marker::Sync for ID3D12VersionedRootSignatureDeserializer {}
 unsafe impl ::windows::core::Vtable for ID3D12VersionedRootSignatureDeserializer {
     type Vtable = ID3D12VersionedRootSignatureDeserializer_Vtbl;
 }
@@ -39494,6 +39640,8 @@ impl ::core::fmt::Debug for ID3D12VirtualizationGuestDevice {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3D12VirtualizationGuestDevice {}
+unsafe impl ::core::marker::Sync for ID3D12VirtualizationGuestDevice {}
 unsafe impl ::windows::core::Vtable for ID3D12VirtualizationGuestDevice {
     type Vtable = ID3D12VirtualizationGuestDevice_Vtbl;
 }

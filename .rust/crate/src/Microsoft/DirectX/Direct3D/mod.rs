@@ -33,6 +33,8 @@ impl ::core::fmt::Debug for ID3DBlob {
         f.debug_tuple("ID3DBlob").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3DBlob {}
+unsafe impl ::core::marker::Sync for ID3DBlob {}
 unsafe impl ::windows::core::Vtable for ID3DBlob {
     type Vtable = ID3DBlob_Vtbl;
 }
@@ -95,6 +97,8 @@ impl ::core::fmt::Debug for ID3DDestructionNotifier {
             .finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3DDestructionNotifier {}
+unsafe impl ::core::marker::Sync for ID3DDestructionNotifier {}
 unsafe impl ::windows::core::Vtable for ID3DDestructionNotifier {
     type Vtable = ID3DDestructionNotifier_Vtbl;
 }
@@ -162,6 +166,8 @@ impl ::core::fmt::Debug for ID3DInclude {
         f.debug_tuple("ID3DInclude").field(&self.0).finish()
     }
 }
+unsafe impl ::core::marker::Send for ID3DInclude {}
+unsafe impl ::core::marker::Sync for ID3DInclude {}
 unsafe impl ::windows::core::Vtable for ID3DInclude {
     type Vtable = ID3DInclude_Vtbl;
 }
