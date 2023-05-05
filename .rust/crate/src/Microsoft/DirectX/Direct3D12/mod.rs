@@ -5,6 +5,7 @@
     dead_code,
     clippy::all
 )]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 #[inline]
 pub unsafe fn D3D12CreateDevice<P0, T>(
     padapter: P0,
@@ -17,7 +18,7 @@ where
 {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12CreateDevice(
+        pub fn D3D12CreateDevice(
             padapter: *mut ::core::ffi::c_void,
             minimumfeaturelevel: ::windows::Win32::Graphics::Direct3D::D3D_FEATURE_LEVEL,
             riid: *const ::windows::core::GUID,
@@ -41,7 +42,7 @@ pub unsafe fn D3D12CreateRootSignatureDeserializer(
 ) -> ::windows::core::Result<()> {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12CreateRootSignatureDeserializer(
+        pub fn D3D12CreateRootSignatureDeserializer(
             psrcdata: *const ::core::ffi::c_void,
             srcdatasizeinbytes: usize,
             prootsignaturedeserializerinterface: *const ::windows::core::GUID,
@@ -65,7 +66,7 @@ pub unsafe fn D3D12CreateVersionedRootSignatureDeserializer(
 ) -> ::windows::core::Result<()> {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12CreateVersionedRootSignatureDeserializer(
+        pub fn D3D12CreateVersionedRootSignatureDeserializer(
             psrcdata: *const ::core::ffi::c_void,
             srcdatasizeinbytes: usize,
             prootsignaturedeserializerinterface: *const ::windows::core::GUID,
@@ -89,7 +90,7 @@ pub unsafe fn D3D12EnableExperimentalFeatures(
 ) -> ::windows::core::Result<()> {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12EnableExperimentalFeatures(
+        pub fn D3D12EnableExperimentalFeatures(
             numfeatures: u32,
             piids: *const ::windows::core::GUID,
             pconfigurationstructs: *const ::core::ffi::c_void,
@@ -113,7 +114,7 @@ where
 {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12GetDebugInterface(
+        pub fn D3D12GetDebugInterface(
             riid: *const ::windows::core::GUID,
             ppvdebug: *mut *mut ::core::ffi::c_void,
         ) -> ::windows::core::HRESULT;
@@ -134,7 +135,7 @@ where
 {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12GetInterface(
+        pub fn D3D12GetInterface(
             rclsid: *const ::windows::core::GUID,
             riid: *const ::windows::core::GUID,
             ppvdebug: *mut *mut ::core::ffi::c_void,
@@ -147,6 +148,7 @@ where
     )
     .ok()
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 #[inline]
 pub unsafe fn D3D12SerializeRootSignature(
     prootsignature: *const D3D12_ROOT_SIGNATURE_DESC,
@@ -158,7 +160,7 @@ pub unsafe fn D3D12SerializeRootSignature(
 ) -> ::windows::core::Result<()> {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12SerializeRootSignature(
+        pub fn D3D12SerializeRootSignature(
             prootsignature: *const D3D12_ROOT_SIGNATURE_DESC,
             version: D3D_ROOT_SIGNATURE_VERSION,
             ppblob: *mut *mut ::core::ffi::c_void,
@@ -173,6 +175,7 @@ pub unsafe fn D3D12SerializeRootSignature(
     )
     .ok()
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 #[inline]
 pub unsafe fn D3D12SerializeVersionedRootSignature(
     prootsignature: *const D3D12_VERSIONED_ROOT_SIGNATURE_DESC,
@@ -183,7 +186,7 @@ pub unsafe fn D3D12SerializeVersionedRootSignature(
 ) -> ::windows::core::Result<()> {
     #[link(name = "d3d12")]
     extern "system" {
-        fn D3D12SerializeVersionedRootSignature(
+        pub fn D3D12SerializeVersionedRootSignature(
             prootsignature: *const D3D12_VERSIONED_ROOT_SIGNATURE_DESC,
             ppblob: *mut *mut ::core::ffi::c_void,
             pperrorblob: *mut *mut ::core::ffi::c_void,
@@ -676,6 +679,7 @@ impl ID3D12CommandQueue {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn UpdateTileMappings<P0, P1>(
         &self,
         presource: P0,
@@ -708,6 +712,7 @@ impl ID3D12CommandQueue {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTileMappings<P0, P1>(
         &self,
         pdstresource: P0,
@@ -858,6 +863,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12CommandQueue {
 #[doc(hidden)]
 pub struct ID3D12CommandQueue_Vtbl {
     pub base__: ID3D12Pageable_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub UpdateTileMappings: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
@@ -871,6 +877,9 @@ pub struct ID3D12CommandQueue_Vtbl {
         prangetilecounts: *const u32,
         flags: D3D12_TILE_MAPPING_FLAGS,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    UpdateTileMappings: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub CopyTileMappings: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdstresource: *mut ::core::ffi::c_void,
@@ -880,6 +889,8 @@ pub struct ID3D12CommandQueue_Vtbl {
         pregionsize: *const D3D12_TILE_REGION_SIZE,
         flags: D3D12_TILE_MAPPING_FLAGS,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    CopyTileMappings: usize,
     pub ExecuteCommandLists: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numcommandlists: u32,
@@ -1054,6 +1065,10 @@ pub struct ID3D12CommandSignature_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12CompatibilityDevice(::windows::core::IUnknown);
 impl ID3D12CompatibilityDevice {
+    #[cfg(all(
+        feature = "Win32_Graphics_Direct3D11on12",
+        feature = "Win32_Graphics_Dxgi_Common"
+    ))]
     pub unsafe fn CreateSharedResource<P0, P1, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -1160,6 +1175,10 @@ unsafe impl ::windows::core::ComInterface for ID3D12CompatibilityDevice {
 #[doc(hidden)]
 pub struct ID3D12CompatibilityDevice_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(all(
+        feature = "Win32_Graphics_Direct3D11on12",
+        feature = "Win32_Graphics_Dxgi_Common"
+    ))]
     pub CreateSharedResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -1174,6 +1193,11 @@ pub struct ID3D12CompatibilityDevice_Vtbl {
         riid: *const ::windows::core::GUID,
         ppresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(all(
+        feature = "Win32_Graphics_Direct3D11on12",
+        feature = "Win32_Graphics_Dxgi_Common"
+    )))]
+    CreateSharedResource: usize,
     pub CreateSharedHeap: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapdesc: *const D3D12_HEAP_DESC,
@@ -1301,6 +1325,7 @@ impl ID3D12Debug1 {
             ::windows::core::Interface::as_raw(self),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableGPUBasedValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1310,6 +1335,7 @@ impl ID3D12Debug1 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableSynchronizedCommandQueueValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1351,14 +1377,20 @@ unsafe impl ::windows::core::ComInterface for ID3D12Debug1 {
 pub struct ID3D12Debug1_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
     pub EnableDebugLayer: unsafe extern "system" fn(this: *mut ::core::ffi::c_void),
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEnableGPUBasedValidation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEnableGPUBasedValidation: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEnableSynchronizedCommandQueueValidation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEnableSynchronizedCommandQueueValidation: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Debug2(::windows::core::IUnknown);
@@ -1413,6 +1445,7 @@ impl ID3D12Debug3 {
             .base__
             .EnableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableGPUBasedValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1422,6 +1455,7 @@ impl ID3D12Debug3 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableSynchronizedCommandQueueValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1468,14 +1502,20 @@ unsafe impl ::windows::core::ComInterface for ID3D12Debug3 {
 #[doc(hidden)]
 pub struct ID3D12Debug3_Vtbl {
     pub base__: ID3D12Debug_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEnableGPUBasedValidation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEnableGPUBasedValidation: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEnableSynchronizedCommandQueueValidation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEnableSynchronizedCommandQueueValidation: usize,
     pub SetGPUBasedValidationFlags: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         flags: D3D12_GPU_BASED_VALIDATION_FLAGS,
@@ -1490,6 +1530,7 @@ impl ID3D12Debug4 {
             .base__
             .EnableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableGPUBasedValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1501,6 +1542,7 @@ impl ID3D12Debug4 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableSynchronizedCommandQueueValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1570,6 +1612,7 @@ impl ID3D12Debug5 {
             .base__
             .EnableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableGPUBasedValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1582,6 +1625,7 @@ impl ID3D12Debug5 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableSynchronizedCommandQueueValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1605,6 +1649,7 @@ impl ID3D12Debug5 {
             .base__
             .DisableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableAutoName<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1651,10 +1696,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12Debug5 {
 #[doc(hidden)]
 pub struct ID3D12Debug5_Vtbl {
     pub base__: ID3D12Debug4_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEnableAutoName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEnableAutoName: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Debug6(::windows::core::IUnknown);
@@ -1667,6 +1715,7 @@ impl ID3D12Debug6 {
             .base__
             .EnableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableGPUBasedValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1680,6 +1729,7 @@ impl ID3D12Debug6 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableSynchronizedCommandQueueValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1706,6 +1756,7 @@ impl ID3D12Debug6 {
             .base__
             .DisableDebugLayer)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEnableAutoName<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1717,6 +1768,7 @@ impl ID3D12Debug6 {
             enable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetForceLegacyBarrierValidation<P0>(&self, enable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -1764,14 +1816,18 @@ unsafe impl ::windows::core::ComInterface for ID3D12Debug6 {
 #[doc(hidden)]
 pub struct ID3D12Debug6_Vtbl {
     pub base__: ID3D12Debug5_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetForceLegacyBarrierValidation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetForceLegacyBarrierValidation: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12DebugCommandList(::windows::core::IUnknown);
 impl ID3D12DebugCommandList {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -1833,12 +1889,15 @@ unsafe impl ::windows::core::ComInterface for ID3D12DebugCommandList {
 #[doc(hidden)]
 pub struct ID3D12DebugCommandList_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub AssertResourceState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         subresource: u32,
         state: u32,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    AssertResourceState: usize,
     pub SetFeatureMask: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         mask: D3D12_DEBUG_FEATURE,
@@ -1849,6 +1908,7 @@ pub struct ID3D12DebugCommandList_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12DebugCommandList1(::windows::core::IUnknown);
 impl ID3D12DebugCommandList1 {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -1926,12 +1986,15 @@ unsafe impl ::windows::core::ComInterface for ID3D12DebugCommandList1 {
 #[doc(hidden)]
 pub struct ID3D12DebugCommandList1_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub AssertResourceState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         subresource: u32,
         state: u32,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    AssertResourceState: usize,
     pub SetDebugParameter: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         r#type: D3D12_DEBUG_COMMAND_LIST_PARAMETER_TYPE,
@@ -1948,6 +2011,7 @@ pub struct ID3D12DebugCommandList1_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12DebugCommandList2(::windows::core::IUnknown);
 impl ID3D12DebugCommandList2 {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -2058,6 +2122,7 @@ pub struct ID3D12DebugCommandList2_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12DebugCommandList3(::windows::core::IUnknown);
 impl ID3D12DebugCommandList3 {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -2206,6 +2271,7 @@ pub struct ID3D12DebugCommandList3_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12DebugCommandQueue(::windows::core::IUnknown);
 impl ID3D12DebugCommandQueue {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -2255,16 +2321,20 @@ unsafe impl ::windows::core::ComInterface for ID3D12DebugCommandQueue {
 #[doc(hidden)]
 pub struct ID3D12DebugCommandQueue_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub AssertResourceState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         subresource: u32,
         state: u32,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    AssertResourceState: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12DebugCommandQueue1(::windows::core::IUnknown);
 impl ID3D12DebugCommandQueue1 {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn AssertResourceState<P0>(
         &self,
         presource: P0,
@@ -2882,6 +2952,7 @@ impl ID3D12Device {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -3007,6 +3078,7 @@ impl ID3D12Device {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -3022,6 +3094,7 @@ impl ID3D12Device {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -3040,6 +3113,7 @@ impl ID3D12Device {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -3055,6 +3129,7 @@ impl ID3D12Device {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -3117,6 +3192,7 @@ impl ID3D12Device {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -3146,6 +3222,7 @@ impl ID3D12Device {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -3186,6 +3263,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -3211,6 +3289,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -3231,6 +3310,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -3253,6 +3333,7 @@ impl ID3D12Device {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -3270,6 +3351,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -3333,6 +3415,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -3372,6 +3455,7 @@ impl ID3D12Device {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -3426,6 +3510,7 @@ impl ID3D12Device {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self).GetAdapterLuid)(
@@ -3478,12 +3563,15 @@ pub struct ID3D12Device_Vtbl {
         riid: *const ::windows::core::GUID,
         ppcommandallocator: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub CreateGraphicsPipelineState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
         riid: *const ::windows::core::GUID,
         pppipelinestate: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common")))]
+    CreateGraphicsPipelineState: usize,
     pub CreateComputePipelineState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_COMPUTE_PIPELINE_STATE_DESC,
@@ -3528,12 +3616,16 @@ pub struct ID3D12Device_Vtbl {
         pdesc: *const D3D12_CONSTANT_BUFFER_VIEW_DESC,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateShaderResourceView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_SHADER_RESOURCE_VIEW_DESC,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateShaderResourceView: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateUnorderedAccessView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
@@ -3541,18 +3633,26 @@ pub struct ID3D12Device_Vtbl {
         pdesc: *const D3D12_UNORDERED_ACCESS_VIEW_DESC,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateUnorderedAccessView: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateRenderTargetView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_RENDER_TARGET_VIEW_DESC,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateRenderTargetView: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateDepthStencilView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_DEPTH_STENCIL_VIEW_DESC,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateDepthStencilView: usize,
     pub CreateSampler: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_SAMPLER_DESC,
@@ -3575,6 +3675,7 @@ pub struct ID3D12Device_Vtbl {
         srcdescriptorrangestart: D3D12_CPU_DESCRIPTOR_HANDLE,
         descriptorheapstype: D3D12_DESCRIPTOR_HEAP_TYPE,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetResourceAllocationInfo: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_ALLOCATION_INFO,
@@ -3582,12 +3683,15 @@ pub struct ID3D12Device_Vtbl {
         numresourcedescs: u32,
         presourcedescs: *const D3D12_RESOURCE_DESC,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetResourceAllocationInfo: usize,
     pub GetCustomHeapProperties: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_HEAP_PROPERTIES,
         nodemask: u32,
         heaptype: D3D12_HEAP_TYPE,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateCommittedResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -3598,12 +3702,15 @@ pub struct ID3D12Device_Vtbl {
         riidresource: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateCommittedResource: usize,
     pub CreateHeap: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_HEAP_DESC,
         riid: *const ::windows::core::GUID,
         ppvheap: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreatePlacedResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheap: *mut ::core::ffi::c_void,
@@ -3614,6 +3721,9 @@ pub struct ID3D12Device_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreatePlacedResource: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateReservedResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -3622,6 +3732,9 @@ pub struct ID3D12Device_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateReservedResource: usize,
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub CreateSharedHandle: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pobject: *mut ::core::ffi::c_void,
@@ -3630,18 +3743,26 @@ pub struct ID3D12Device_Vtbl {
         name: ::windows::core::PCWSTR,
         phandle: *mut ::windows::Win32::Foundation::HANDLE,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Security")))]
+    CreateSharedHandle: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub OpenSharedHandle: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         nthandle: ::windows::Win32::Foundation::HANDLE,
         riid: *const ::windows::core::GUID,
         ppvobj: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    OpenSharedHandle: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub OpenSharedHandleByName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         name: ::windows::core::PCWSTR,
         access: u32,
         pnthandle: *mut ::windows::Win32::Foundation::HANDLE,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    OpenSharedHandleByName: usize,
     pub MakeResident: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numobjects: u32,
@@ -3661,6 +3782,7 @@ pub struct ID3D12Device_Vtbl {
     ) -> ::windows::core::HRESULT,
     pub GetDeviceRemovedReason:
         unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetCopyableFootprints: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -3672,16 +3794,21 @@ pub struct ID3D12Device_Vtbl {
         prowsizeinbytes: *mut u64,
         ptotalbytes: *mut u64,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetCopyableFootprints: usize,
     pub CreateQueryHeap: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_QUERY_HEAP_DESC,
         riid: *const ::windows::core::GUID,
         ppvheap: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetStablePowerState: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         enable: ::windows::Win32::Foundation::BOOL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetStablePowerState: usize,
     pub CreateCommandSignature: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_COMMAND_SIGNATURE_DESC,
@@ -3699,10 +3826,13 @@ pub struct ID3D12Device_Vtbl {
         firstsubresourcetilingtoget: u32,
         psubresourcetilingsfornonpackedmips: *mut D3D12_SUBRESOURCE_TILING,
     ),
+    #[cfg(feature = "Win32_Foundation")]
     pub GetAdapterLuid: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut ::windows::Win32::Foundation::LUID,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetAdapterLuid: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device1(::windows::core::IUnknown);
@@ -3813,6 +3943,7 @@ impl ID3D12Device1 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -3954,6 +4085,7 @@ impl ID3D12Device1 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -3971,6 +4103,7 @@ impl ID3D12Device1 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -3991,6 +4124,7 @@ impl ID3D12Device1 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -4008,6 +4142,7 @@ impl ID3D12Device1 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -4078,6 +4213,7 @@ impl ID3D12Device1 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -4111,6 +4247,7 @@ impl ID3D12Device1 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -4153,6 +4290,7 @@ impl ID3D12Device1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -4180,6 +4318,7 @@ impl ID3D12Device1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -4202,6 +4341,7 @@ impl ID3D12Device1 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -4226,6 +4366,7 @@ impl ID3D12Device1 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -4245,6 +4386,7 @@ impl ID3D12Device1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -4310,6 +4452,7 @@ impl ID3D12Device1 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -4353,6 +4496,7 @@ impl ID3D12Device1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -4413,6 +4557,7 @@ impl ID3D12Device1 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -4434,6 +4579,7 @@ impl ID3D12Device1 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -4512,6 +4658,7 @@ pub struct ID3D12Device1_Vtbl {
         riid: *const ::windows::core::GUID,
         pppipelinelibrary: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEventOnMultipleFenceCompletion: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         ppfences: *const *mut ::core::ffi::c_void,
@@ -4521,6 +4668,8 @@ pub struct ID3D12Device1_Vtbl {
         hevent: ::windows::Win32::Foundation::HANDLE,
     )
         -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEventOnMultipleFenceCompletion: usize,
     pub SetResidencyPriority: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numobjects: u32,
@@ -4700,6 +4849,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -4913,6 +5063,7 @@ impl ID3D12Device10 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -4939,6 +5090,7 @@ impl ID3D12Device10 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -4968,6 +5120,7 @@ impl ID3D12Device10 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -4994,6 +5147,7 @@ impl ID3D12Device10 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -5100,6 +5254,7 @@ impl ID3D12Device10 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -5151,6 +5306,7 @@ impl ID3D12Device10 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -5213,6 +5369,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -5249,6 +5406,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -5280,6 +5438,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -5313,6 +5472,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -5341,6 +5501,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -5457,6 +5618,7 @@ impl ID3D12Device10 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -5518,6 +5680,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -5605,6 +5768,7 @@ impl ID3D12Device10 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -5645,6 +5809,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -5749,6 +5914,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -5852,6 +6018,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -5912,6 +6079,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -5942,6 +6110,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -6088,6 +6257,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -6122,6 +6292,7 @@ impl ID3D12Device10 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -6191,6 +6362,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo2(
         &self,
         visiblemask: u32,
@@ -6212,6 +6384,7 @@ impl ID3D12Device10 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource2<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -6242,6 +6415,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource1<P0, T>(
         &self,
         pheap: P0,
@@ -6289,6 +6463,7 @@ impl ID3D12Device10 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints1(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -6363,6 +6538,7 @@ impl ID3D12Device10 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource3<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -6401,6 +6577,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource2<P0, T>(
         &self,
         pheap: P0,
@@ -6437,6 +6614,7 @@ impl ID3D12Device10 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource2<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -6516,6 +6694,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12Device10 {
 #[doc(hidden)]
 pub struct ID3D12Device10_Vtbl {
     pub base__: ID3D12Device9_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateCommittedResource3: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -6529,6 +6708,9 @@ pub struct ID3D12Device10_Vtbl {
         riidresource: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateCommittedResource3: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreatePlacedResource2: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheap: *mut ::core::ffi::c_void,
@@ -6541,6 +6723,9 @@ pub struct ID3D12Device10_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreatePlacedResource2: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateReservedResource2: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -6552,6 +6737,8 @@ pub struct ID3D12Device10_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateReservedResource2: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device11(::windows::core::IUnknown);
@@ -6732,6 +6919,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -6953,6 +7141,7 @@ impl ID3D12Device11 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -6980,6 +7169,7 @@ impl ID3D12Device11 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -7010,6 +7200,7 @@ impl ID3D12Device11 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -7037,6 +7228,7 @@ impl ID3D12Device11 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -7147,6 +7339,7 @@ impl ID3D12Device11 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -7200,6 +7393,7 @@ impl ID3D12Device11 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -7264,6 +7458,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -7301,6 +7496,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -7333,6 +7529,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -7367,6 +7564,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -7396,6 +7594,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -7517,6 +7716,7 @@ impl ID3D12Device11 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -7580,6 +7780,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -7670,6 +7871,7 @@ impl ID3D12Device11 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -7712,6 +7914,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -7820,6 +8023,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -7927,6 +8131,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -7989,6 +8194,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -8020,6 +8226,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -8173,6 +8380,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -8209,6 +8417,7 @@ impl ID3D12Device11 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -8281,6 +8490,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo2(
         &self,
         visiblemask: u32,
@@ -8303,6 +8513,7 @@ impl ID3D12Device11 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource2<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -8334,6 +8545,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource1<P0, T>(
         &self,
         pheap: P0,
@@ -8383,6 +8595,7 @@ impl ID3D12Device11 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints1(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -8461,6 +8674,7 @@ impl ID3D12Device11 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource3<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -8501,6 +8715,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource2<P0, T>(
         &self,
         pheap: P0,
@@ -8539,6 +8754,7 @@ impl ID3D12Device11 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource2<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -8824,6 +9040,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -9053,6 +9270,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -9081,6 +9299,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -9112,6 +9331,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -9140,6 +9360,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -9254,6 +9475,7 @@ impl ID3D12Device12 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -9309,6 +9531,7 @@ impl ID3D12Device12 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -9375,6 +9598,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -9413,6 +9637,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -9446,6 +9671,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -9481,6 +9707,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -9511,6 +9738,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -9637,6 +9865,7 @@ impl ID3D12Device12 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -9702,6 +9931,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -9795,6 +10025,7 @@ impl ID3D12Device12 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -9839,6 +10070,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -9951,6 +10183,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -10062,6 +10295,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -10126,6 +10360,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -10158,6 +10393,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -10318,6 +10554,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -10356,6 +10593,7 @@ impl ID3D12Device12 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -10431,6 +10669,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo2(
         &self,
         visiblemask: u32,
@@ -10454,6 +10693,7 @@ impl ID3D12Device12 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource2<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -10486,6 +10726,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource1<P0, T>(
         &self,
         pheap: P0,
@@ -10537,6 +10778,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints1(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -10619,6 +10861,7 @@ impl ID3D12Device12 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource3<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -10660,6 +10903,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource2<P0, T>(
         &self,
         pheap: P0,
@@ -10699,6 +10943,7 @@ impl ID3D12Device12 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource2<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -10749,6 +10994,7 @@ impl ID3D12Device12 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo3(
         &self,
         visiblemask: u32,
@@ -10820,6 +11066,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12Device12 {
 #[doc(hidden)]
 pub struct ID3D12Device12_Vtbl {
     pub base__: ID3D12Device11_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetResourceAllocationInfo3: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_ALLOCATION_INFO,
@@ -10830,6 +11077,8 @@ pub struct ID3D12Device12_Vtbl {
         ppcastableformats: *const *const ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
         presourceallocationinfo1: *mut D3D12_RESOURCE_ALLOCATION_INFO1,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetResourceAllocationInfo3: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device2(::windows::core::IUnknown);
@@ -10947,6 +11196,7 @@ impl ID3D12Device2 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -11096,6 +11346,7 @@ impl ID3D12Device2 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -11114,6 +11365,7 @@ impl ID3D12Device2 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -11135,6 +11387,7 @@ impl ID3D12Device2 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -11153,6 +11406,7 @@ impl ID3D12Device2 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -11227,6 +11481,7 @@ impl ID3D12Device2 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -11262,6 +11517,7 @@ impl ID3D12Device2 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -11308,6 +11564,7 @@ impl ID3D12Device2 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -11336,6 +11593,7 @@ impl ID3D12Device2 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -11359,6 +11617,7 @@ impl ID3D12Device2 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -11384,6 +11643,7 @@ impl ID3D12Device2 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -11404,6 +11664,7 @@ impl ID3D12Device2 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -11477,6 +11738,7 @@ impl ID3D12Device2 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -11522,6 +11784,7 @@ impl ID3D12Device2 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -11585,6 +11848,7 @@ impl ID3D12Device2 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -11609,6 +11873,7 @@ impl ID3D12Device2 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -11831,6 +12096,7 @@ impl ID3D12Device3 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -11988,6 +12254,7 @@ impl ID3D12Device3 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -12007,6 +12274,7 @@ impl ID3D12Device3 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -12029,6 +12297,7 @@ impl ID3D12Device3 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -12048,6 +12317,7 @@ impl ID3D12Device3 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -12126,6 +12396,7 @@ impl ID3D12Device3 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -12163,6 +12434,7 @@ impl ID3D12Device3 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -12211,6 +12483,7 @@ impl ID3D12Device3 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -12240,6 +12513,7 @@ impl ID3D12Device3 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -12264,6 +12538,7 @@ impl ID3D12Device3 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -12290,6 +12565,7 @@ impl ID3D12Device3 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -12311,6 +12587,7 @@ impl ID3D12Device3 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -12392,6 +12669,7 @@ impl ID3D12Device3 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -12439,6 +12717,7 @@ impl ID3D12Device3 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -12505,6 +12784,7 @@ impl ID3D12Device3 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -12531,6 +12811,7 @@ impl ID3D12Device3 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -12606,6 +12887,7 @@ impl ID3D12Device3 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -12687,12 +12969,15 @@ pub struct ID3D12Device3_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvheap: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Foundation")]
     pub OpenExistingHeapFromFileMapping: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         hfilemapping: ::windows::Win32::Foundation::HANDLE,
         riid: *const ::windows::core::GUID,
         ppvheap: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    OpenExistingHeapFromFileMapping: usize,
     pub EnqueueMakeResident: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         flags: D3D12_RESIDENCY_FLAGS,
@@ -12832,6 +13117,7 @@ impl ID3D12Device4 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -12997,6 +13283,7 @@ impl ID3D12Device4 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -13017,6 +13304,7 @@ impl ID3D12Device4 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -13040,6 +13328,7 @@ impl ID3D12Device4 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -13060,6 +13349,7 @@ impl ID3D12Device4 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -13142,6 +13432,7 @@ impl ID3D12Device4 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -13181,6 +13472,7 @@ impl ID3D12Device4 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -13231,6 +13523,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -13261,6 +13554,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -13286,6 +13580,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -13313,6 +13608,7 @@ impl ID3D12Device4 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -13335,6 +13631,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -13421,6 +13718,7 @@ impl ID3D12Device4 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -13470,6 +13768,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -13539,6 +13838,7 @@ impl ID3D12Device4 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -13567,6 +13867,7 @@ impl ID3D12Device4 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -13647,6 +13948,7 @@ impl ID3D12Device4 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -13724,6 +14026,7 @@ impl ID3D12Device4 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -13770,6 +14073,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -13793,6 +14097,7 @@ impl ID3D12Device4 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -13864,6 +14169,7 @@ pub struct ID3D12Device4_Vtbl {
         riid: *const ::windows::core::GUID,
         ppsession: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateCommittedResource1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -13875,6 +14181,8 @@ pub struct ID3D12Device4_Vtbl {
         riidresource: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateCommittedResource1: usize,
     pub CreateHeap1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_HEAP_DESC,
@@ -13882,6 +14190,7 @@ pub struct ID3D12Device4_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvheap: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateReservedResource1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -13891,6 +14200,9 @@ pub struct ID3D12Device4_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateReservedResource1: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetResourceAllocationInfo1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_ALLOCATION_INFO,
@@ -13899,6 +14211,8 @@ pub struct ID3D12Device4_Vtbl {
         presourcedescs: *const D3D12_RESOURCE_DESC,
         presourceallocationinfo1: *mut D3D12_RESOURCE_ALLOCATION_INFO1,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetResourceAllocationInfo1: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device5(::windows::core::IUnknown);
@@ -14037,6 +14351,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -14210,6 +14525,7 @@ impl ID3D12Device5 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -14231,6 +14547,7 @@ impl ID3D12Device5 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -14255,6 +14572,7 @@ impl ID3D12Device5 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -14276,6 +14594,7 @@ impl ID3D12Device5 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -14362,6 +14681,7 @@ impl ID3D12Device5 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -14403,6 +14723,7 @@ impl ID3D12Device5 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -14455,6 +14776,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -14486,6 +14808,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -14512,6 +14835,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -14540,6 +14864,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -14563,6 +14888,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -14654,6 +14980,7 @@ impl ID3D12Device5 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -14705,6 +15032,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -14777,6 +15105,7 @@ impl ID3D12Device5 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -14807,6 +15136,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -14891,6 +15221,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -14974,6 +15305,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -15022,6 +15354,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -15047,6 +15380,7 @@ impl ID3D12Device5 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -15154,6 +15488,7 @@ impl ID3D12Device5 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -15251,11 +15586,14 @@ pub struct ID3D12Device5_Vtbl {
         riid: *const ::windows::core::GUID,
         ppstateobject: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetRaytracingAccelerationStructurePrebuildInfo: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
         pinfo: *mut D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetRaytracingAccelerationStructurePrebuildInfo: usize,
     pub CheckDriverMatchingIdentifier:
         unsafe extern "system" fn(
             this: *mut ::core::ffi::c_void,
@@ -15407,6 +15745,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -15588,6 +15927,7 @@ impl ID3D12Device6 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -15610,6 +15950,7 @@ impl ID3D12Device6 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -15635,6 +15976,7 @@ impl ID3D12Device6 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -15657,6 +15999,7 @@ impl ID3D12Device6 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -15747,6 +16090,7 @@ impl ID3D12Device6 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -15790,6 +16134,7 @@ impl ID3D12Device6 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -15844,6 +16189,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -15876,6 +16222,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -15903,6 +16250,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -15932,6 +16280,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -15956,6 +16305,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -16052,6 +16402,7 @@ impl ID3D12Device6 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -16105,6 +16456,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -16180,6 +16532,7 @@ impl ID3D12Device6 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -16212,6 +16565,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -16300,6 +16654,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -16387,6 +16742,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -16439,6 +16795,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -16465,6 +16822,7 @@ impl ID3D12Device6 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -16583,6 +16941,7 @@ impl ID3D12Device6 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -16609,6 +16968,7 @@ impl ID3D12Device6 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -16671,6 +17031,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12Device6 {
 #[doc(hidden)]
 pub struct ID3D12Device6_Vtbl {
     pub base__: ID3D12Device5_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetBackgroundProcessingMode: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -16678,6 +17039,8 @@ pub struct ID3D12Device6_Vtbl {
         heventtosignaluponcompletion: ::windows::Win32::Foundation::HANDLE,
         pbfurthermeasurementsdesired: *mut ::windows::Win32::Foundation::BOOL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetBackgroundProcessingMode: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device7(::windows::core::IUnknown);
@@ -16830,6 +17193,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -17019,6 +17383,7 @@ impl ID3D12Device7 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -17042,6 +17407,7 @@ impl ID3D12Device7 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -17068,6 +17434,7 @@ impl ID3D12Device7 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -17091,6 +17458,7 @@ impl ID3D12Device7 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -17185,6 +17553,7 @@ impl ID3D12Device7 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -17230,6 +17599,7 @@ impl ID3D12Device7 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -17286,6 +17656,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -17319,6 +17690,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -17347,6 +17719,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -17377,6 +17750,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -17402,6 +17776,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -17503,6 +17878,7 @@ impl ID3D12Device7 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -17558,6 +17934,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -17636,6 +18013,7 @@ impl ID3D12Device7 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -17670,6 +18048,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -17762,6 +18141,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -17853,6 +18233,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -17907,6 +18288,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -17934,6 +18316,7 @@ impl ID3D12Device7 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -18059,6 +18442,7 @@ impl ID3D12Device7 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -18087,6 +18471,7 @@ impl ID3D12Device7 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -18359,6 +18744,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -18556,6 +18942,7 @@ impl ID3D12Device8 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -18580,6 +18967,7 @@ impl ID3D12Device8 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -18607,6 +18995,7 @@ impl ID3D12Device8 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -18631,6 +19020,7 @@ impl ID3D12Device8 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -18729,6 +19119,7 @@ impl ID3D12Device8 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -18776,6 +19167,7 @@ impl ID3D12Device8 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -18834,6 +19226,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -18868,6 +19261,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -18897,6 +19291,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -18928,6 +19323,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -18954,6 +19350,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -19060,6 +19457,7 @@ impl ID3D12Device8 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -19117,6 +19515,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -19198,6 +19597,7 @@ impl ID3D12Device8 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -19234,6 +19634,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -19330,6 +19731,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -19425,6 +19827,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -19481,6 +19884,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -19509,6 +19913,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -19641,6 +20046,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -19671,6 +20077,7 @@ impl ID3D12Device8 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -19734,6 +20141,7 @@ impl ID3D12Device8 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo2(
         &self,
         visiblemask: u32,
@@ -19752,6 +20160,7 @@ impl ID3D12Device8 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource2<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -19779,6 +20188,7 @@ impl ID3D12Device8 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource1<P0, T>(
         &self,
         pheap: P0,
@@ -19820,6 +20230,7 @@ impl ID3D12Device8 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints1(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -19886,6 +20297,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12Device8 {
 #[doc(hidden)]
 pub struct ID3D12Device8_Vtbl {
     pub base__: ID3D12Device7_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetResourceAllocationInfo2: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_ALLOCATION_INFO,
@@ -19894,6 +20306,9 @@ pub struct ID3D12Device8_Vtbl {
         presourcedescs: *const D3D12_RESOURCE_DESC1,
         presourceallocationinfo1: *mut D3D12_RESOURCE_ALLOCATION_INFO1,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetResourceAllocationInfo2: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreateCommittedResource2: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -19905,6 +20320,9 @@ pub struct ID3D12Device8_Vtbl {
         riidresource: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreateCommittedResource2: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CreatePlacedResource1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pheap: *mut ::core::ffi::c_void,
@@ -19915,12 +20333,15 @@ pub struct ID3D12Device8_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvresource: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CreatePlacedResource1: usize,
     pub CreateSamplerFeedbackUnorderedAccessView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         ptargetedresource: *mut ::core::ffi::c_void,
         pfeedbackresource: *mut ::core::ffi::c_void,
         destdescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetCopyableFootprints1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -19932,6 +20353,8 @@ pub struct ID3D12Device8_Vtbl {
         prowsizeinbytes: *mut u64,
         ptotalbytes: *mut u64,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetCopyableFootprints1: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Device9(::windows::core::IUnknown);
@@ -20098,6 +20521,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn CreateGraphicsPipelineState<T>(
         &self,
         pdesc: *const D3D12_GRAPHICS_PIPELINE_STATE_DESC,
@@ -20303,6 +20727,7 @@ impl ID3D12Device9 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateShaderResourceView<P0>(
         &self,
         presource: P0,
@@ -20328,6 +20753,7 @@ impl ID3D12Device9 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateUnorderedAccessView<P0, P1>(
         &self,
         presource: P0,
@@ -20356,6 +20782,7 @@ impl ID3D12Device9 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateRenderTargetView<P0>(
         &self,
         presource: P0,
@@ -20381,6 +20808,7 @@ impl ID3D12Device9 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateDepthStencilView<P0>(
         &self,
         presource: P0,
@@ -20483,6 +20911,7 @@ impl ID3D12Device9 {
             descriptorheapstype,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo(
         &self,
         visiblemask: u32,
@@ -20532,6 +20961,7 @@ impl ID3D12Device9 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource<T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -20592,6 +21022,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource<P0, T>(
         &self,
         pheap: P0,
@@ -20627,6 +21058,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource<T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -20657,6 +21089,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Security"))]
     pub unsafe fn CreateSharedHandle<P0, P1>(
         &self,
         pobject: P0,
@@ -20689,6 +21122,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandle<P0, T>(
         &self,
         nthandle: P0,
@@ -20716,6 +21150,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenSharedHandleByName<P0>(
         &self,
         name: P0,
@@ -20827,6 +21262,7 @@ impl ID3D12Device9 {
             .GetDeviceRemovedReason)(::windows::core::Interface::as_raw(self))
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC,
@@ -20886,6 +21322,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetStablePowerState<P0>(&self, enable: P0) -> ::windows::core::Result<()>
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -20970,6 +21407,7 @@ impl ID3D12Device9 {
             psubresourcetilingsfornonpackedmips,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetAdapterLuid(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -21008,6 +21446,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnMultipleFenceCompletion<P0>(
         &self,
         ppfences: *const ::core::option::Option<ID3D12Fence>,
@@ -21108,6 +21547,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OpenExistingHeapFromFileMapping<P0, T>(
         &self,
         hfilemapping: P0,
@@ -21207,6 +21647,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource1<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -21265,6 +21706,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateReservedResource1<P0, T>(
         &self,
         pdesc: *const D3D12_RESOURCE_DESC,
@@ -21294,6 +21736,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo1(
         &self,
         visiblemask: u32,
@@ -21433,6 +21876,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetRaytracingAccelerationStructurePrebuildInfo(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
@@ -21465,6 +21909,7 @@ impl ID3D12Device9 {
             pidentifiertocheck,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBackgroundProcessingMode<P0>(
         &self,
         mode: D3D12_BACKGROUND_PROCESSING_MODE,
@@ -21531,6 +21976,7 @@ impl ID3D12Device9 {
         )
         .from_abi(result__)
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetResourceAllocationInfo2(
         &self,
         visiblemask: u32,
@@ -21551,6 +21997,7 @@ impl ID3D12Device9 {
         );
         result__
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreateCommittedResource2<P0, T>(
         &self,
         pheapproperties: *const D3D12_HEAP_PROPERTIES,
@@ -21580,6 +22027,7 @@ impl ID3D12Device9 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CreatePlacedResource1<P0, T>(
         &self,
         pheap: P0,
@@ -21625,6 +22073,7 @@ impl ID3D12Device9 {
             ::core::mem::transmute(destdescriptor),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetCopyableFootprints1(
         &self,
         presourcedesc: *const D3D12_RESOURCE_DESC1,
@@ -21894,6 +22343,7 @@ impl ID3D12DeviceConfiguration {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn SerializeVersionedRootSignature(
         &self,
         pdesc: *const D3D12_VERSIONED_ROOT_SIGNATURE_DESC,
@@ -21970,12 +22420,15 @@ pub struct ID3D12DeviceConfiguration_Vtbl {
         pguids: *mut ::windows::core::GUID,
         numguids: u32,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub SerializeVersionedRootSignature: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_VERSIONED_ROOT_SIGNATURE_DESC,
         ppresult: *mut *mut ::core::ffi::c_void,
         pperror: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    SerializeVersionedRootSignature: usize,
     pub CreateVersionedRootSignatureDeserializer:
         unsafe extern "system" fn(
             this: *mut ::core::ffi::c_void,
@@ -22047,6 +22500,7 @@ impl ID3D12DeviceFactory {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn CreateDevice<P0, T>(
         &self,
         adapter: P0,
@@ -22120,6 +22574,7 @@ pub struct ID3D12DeviceFactory_Vtbl {
         pconfigurationstructs: *const ::core::ffi::c_void,
         pconfigurationstructsizes: *const u32,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub CreateDevice: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         adapter: *mut ::core::ffi::c_void,
@@ -22127,6 +22582,8 @@ pub struct ID3D12DeviceFactory_Vtbl {
         riid: *const ::windows::core::GUID,
         ppvdevice: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    CreateDevice: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12DeviceRemovedExtendedData(::windows::core::IUnknown);
@@ -22561,6 +23018,7 @@ impl ID3D12DeviceRemovedExtendedDataSettings2 {
             ::windows::core::Interface::as_raw(self), enablement
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn UseMarkersOnlyAutoBreadcrumbs<P0>(&self, markersonly: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -22608,10 +23066,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12DeviceRemovedExtendedDataSet
 #[doc(hidden)]
 pub struct ID3D12DeviceRemovedExtendedDataSettings2_Vtbl {
     pub base__: ID3D12DeviceRemovedExtendedDataSettings1_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub UseMarkersOnlyAutoBreadcrumbs: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         markersonly: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    UseMarkersOnlyAutoBreadcrumbs: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12Fence(::windows::core::IUnknown);
@@ -22707,6 +23168,7 @@ impl ID3D12Fence {
             ::windows::core::Interface::as_raw(self),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnCompletion<P0>(
         &self,
         value: u64,
@@ -22767,11 +23229,14 @@ unsafe impl ::windows::core::ComInterface for ID3D12Fence {
 pub struct ID3D12Fence_Vtbl {
     pub base__: ID3D12Pageable_Vtbl,
     pub GetCompletedValue: unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u64,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetEventOnCompletion: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         value: u64,
         hevent: ::windows::Win32::Foundation::HANDLE,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetEventOnCompletion: usize,
     pub Signal: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         value: u64,
@@ -22876,6 +23341,7 @@ impl ID3D12Fence1 {
             .base__
             .GetCompletedValue)(::windows::core::Interface::as_raw(self))
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetEventOnCompletion<P0>(
         &self,
         value: u64,
@@ -22949,6 +23415,7 @@ pub struct ID3D12Fence1_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12FunctionParameterReflection(::std::ptr::NonNull<::std::ffi::c_void>);
 impl ID3D12FunctionParameterReflection {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetDesc(&self, pdesc: *mut D3D12_PARAMETER_DESC) -> ::windows::core::Result<()> {
         (::windows::core::Interface::vtable(self).GetDesc)(
             ::windows::core::Interface::as_raw(self),
@@ -22983,14 +23450,18 @@ impl ::core::clone::Clone for ID3D12FunctionParameterReflection {
 #[repr(C)]
 #[doc(hidden)]
 pub struct ID3D12FunctionParameterReflection_Vtbl {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *mut D3D12_PARAMETER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetDesc: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12FunctionReflection(::std::ptr::NonNull<::std::ffi::c_void>);
 impl ID3D12FunctionReflection {
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
     pub unsafe fn GetDesc(&self, pdesc: *mut D3D12_FUNCTION_DESC) -> ::windows::core::Result<()> {
         (::windows::core::Interface::vtable(self).GetDesc)(
             ::windows::core::Interface::as_raw(self),
@@ -23019,6 +23490,7 @@ impl ID3D12FunctionReflection {
             name.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetResourceBindingDesc(
         &self,
         resourceindex: u32,
@@ -23043,6 +23515,7 @@ impl ID3D12FunctionReflection {
             name.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetResourceBindingDescByName<P0>(
         &self,
         name: P0,
@@ -23094,10 +23567,13 @@ impl ::core::clone::Clone for ID3D12FunctionReflection {
 #[repr(C)]
 #[doc(hidden)]
 pub struct ID3D12FunctionReflection_Vtbl {
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *mut D3D12_FUNCTION_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D")))]
+    GetDesc: usize,
     pub GetConstantBufferByIndex: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         bufferindex: u32,
@@ -23110,22 +23586,28 @@ pub struct ID3D12FunctionReflection_Vtbl {
     ) -> ::core::option::Option<
         ID3D12ShaderReflectionConstantBuffer,
     >,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         resourceindex: u32,
         pdesc: *mut D3D12_SHADER_INPUT_BIND_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetResourceBindingDesc: usize,
     pub GetVariableByName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         name: ::windows::core::PCSTR,
     ) -> ::core::option::Option<
         ID3D12ShaderReflectionVariable,
     >,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDescByName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         name: ::windows::core::PCSTR,
         pdesc: *mut D3D12_SHADER_INPUT_BIND_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetResourceBindingDescByName: usize,
     pub GetFunctionParameter: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         parameterindex: i32,
@@ -23321,6 +23803,7 @@ impl ID3D12GraphicsCommandList {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -23351,6 +23834,7 @@ impl ID3D12GraphicsCommandList {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -23373,6 +23857,7 @@ impl ID3D12GraphicsCommandList {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -23393,6 +23878,7 @@ impl ID3D12GraphicsCommandList {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -23409,6 +23895,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self).RSSetScissorRects)(
             ::windows::core::Interface::as_raw(self),
@@ -23629,6 +24116,7 @@ impl ID3D12GraphicsCommandList {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -23670,6 +24158,7 @@ impl ID3D12GraphicsCommandList {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -23687,6 +24176,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -23705,6 +24195,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -23719,6 +24210,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -23739,6 +24231,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -23759,6 +24252,7 @@ impl ID3D12GraphicsCommandList {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -23964,6 +24458,7 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         srcoffset: u64,
         numbytes: u64,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub CopyTextureRegion: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -23973,11 +24468,14 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         psrc: *const D3D12_TEXTURE_COPY_LOCATION,
         psrcbox: *const D3D12_BOX,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    CopyTextureRegion: usize,
     pub CopyResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdstresource: *mut ::core::ffi::c_void,
         psrcresource: *mut ::core::ffi::c_void,
     ),
+    #[cfg(feature = "Win32_Foundation")]
     pub CopyTiles: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         ptiledresource: *mut ::core::ffi::c_void,
@@ -23987,6 +24485,9 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         bufferstartoffsetinbytes: u64,
         flags: D3D12_TILE_COPY_FLAGS,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    CopyTiles: usize,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub ResolveSubresource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdstresource: *mut ::core::ffi::c_void,
@@ -23995,20 +24496,28 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         srcsubresource: u32,
         format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    ResolveSubresource: usize,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub IASetPrimitiveTopology: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    IASetPrimitiveTopology: usize,
     pub RSSetViewports: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numviewports: u32,
         pviewports: *const D3D12_VIEWPORT,
     ),
+    #[cfg(feature = "Win32_Foundation")]
     pub RSSetScissorRects: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numrects: u32,
         prects: *const ::windows::Win32::Foundation::RECT,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    RSSetScissorRects: usize,
     pub OMSetBlendFactor:
         unsafe extern "system" fn(this: *mut ::core::ffi::c_void, blendfactor: *const f32),
     pub OMSetStencilRef: unsafe extern "system" fn(this: *mut ::core::ffi::c_void, stencilref: u32),
@@ -24104,10 +24613,13 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         rootparameterindex: u32,
         bufferlocation: u64,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub IASetIndexBuffer: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pview: *const D3D12_INDEX_BUFFER_VIEW,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    IASetIndexBuffer: usize,
     pub IASetVertexBuffers: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         startslot: u32,
@@ -24120,6 +24632,7 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         numviews: u32,
         pviews: *const D3D12_STREAM_OUTPUT_BUFFER_VIEW,
     ),
+    #[cfg(feature = "Win32_Foundation")]
     pub OMSetRenderTargets: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numrendertargetdescriptors: u32,
@@ -24127,6 +24640,9 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         rtssinglehandletodescriptorrange: ::windows::Win32::Foundation::BOOL,
         pdepthstencildescriptor: *const D3D12_CPU_DESCRIPTOR_HANDLE,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    OMSetRenderTargets: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub ClearDepthStencilView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -24136,6 +24652,9 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         numrects: u32,
         prects: *const ::windows::Win32::Foundation::RECT,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ClearDepthStencilView: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub ClearRenderTargetView: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -24143,6 +24662,9 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         numrects: u32,
         prects: *const ::windows::Win32::Foundation::RECT,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ClearRenderTargetView: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub ClearUnorderedAccessViewUint: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -24152,6 +24674,9 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         numrects: u32,
         prects: *const ::windows::Win32::Foundation::RECT,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ClearUnorderedAccessViewUint: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub ClearUnorderedAccessViewFloat: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -24161,11 +24686,16 @@ pub struct ID3D12GraphicsCommandList_Vtbl {
         numrects: u32,
         prects: *const ::windows::Win32::Foundation::RECT,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ClearUnorderedAccessViewFloat: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub DiscardResource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         pregion: *const D3D12_DISCARD_REGION,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    DiscardResource: usize,
     pub BeginQuery: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pqueryheap: *mut ::core::ffi::c_void,
@@ -24418,6 +24948,7 @@ impl ID3D12GraphicsCommandList1 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -24450,6 +24981,7 @@ impl ID3D12GraphicsCommandList1 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -24472,6 +25004,7 @@ impl ID3D12GraphicsCommandList1 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -24494,6 +25027,7 @@ impl ID3D12GraphicsCommandList1 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -24513,6 +25047,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -24772,6 +25307,7 @@ impl ID3D12GraphicsCommandList1 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -24817,6 +25353,7 @@ impl ID3D12GraphicsCommandList1 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -24836,6 +25373,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -24856,6 +25394,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -24872,6 +25411,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -24894,6 +25434,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -24916,6 +25457,7 @@ impl ID3D12GraphicsCommandList1 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -25118,6 +25660,7 @@ impl ID3D12GraphicsCommandList1 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -25220,6 +25763,7 @@ pub struct ID3D12GraphicsCommandList1_Vtbl {
         numpixels: u32,
         psamplepositions: *const D3D12_SAMPLE_POSITION,
     ),
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub ResolveSubresourceRegion: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdstresource: *mut ::core::ffi::c_void,
@@ -25232,6 +25776,8 @@ pub struct ID3D12GraphicsCommandList1_Vtbl {
         format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
         resolvemode: D3D12_RESOLVE_MODE,
     ),
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common")))]
+    ResolveSubresourceRegion: usize,
     pub SetViewInstanceMask: unsafe extern "system" fn(this: *mut ::core::ffi::c_void, mask: u32),
 }
 #[repr(transparent)]
@@ -25451,6 +25997,7 @@ impl ID3D12GraphicsCommandList2 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -25487,6 +26034,7 @@ impl ID3D12GraphicsCommandList2 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -25512,6 +26060,7 @@ impl ID3D12GraphicsCommandList2 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -25535,6 +26084,7 @@ impl ID3D12GraphicsCommandList2 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -25556,6 +26106,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -25836,6 +26387,7 @@ impl ID3D12GraphicsCommandList2 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -25886,6 +26438,7 @@ impl ID3D12GraphicsCommandList2 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -25906,6 +26459,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -25927,6 +26481,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -25944,6 +26499,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -25967,6 +26523,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -25990,6 +26547,7 @@ impl ID3D12GraphicsCommandList2 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -26213,6 +26771,7 @@ impl ID3D12GraphicsCommandList2 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -26543,6 +27102,7 @@ impl ID3D12GraphicsCommandList3 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -26581,6 +27141,7 @@ impl ID3D12GraphicsCommandList3 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -26607,6 +27168,7 @@ impl ID3D12GraphicsCommandList3 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -26631,6 +27193,7 @@ impl ID3D12GraphicsCommandList3 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -26654,6 +27217,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -26955,6 +27519,7 @@ impl ID3D12GraphicsCommandList3 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -27008,6 +27573,7 @@ impl ID3D12GraphicsCommandList3 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -27029,6 +27595,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -27051,6 +27618,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -27069,6 +27637,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -27093,6 +27662,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -27117,6 +27687,7 @@ impl ID3D12GraphicsCommandList3 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -27353,6 +27924,7 @@ impl ID3D12GraphicsCommandList3 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -27708,6 +28280,7 @@ impl ID3D12GraphicsCommandList4 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -27748,6 +28321,7 @@ impl ID3D12GraphicsCommandList4 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -27775,6 +28349,7 @@ impl ID3D12GraphicsCommandList4 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -27800,6 +28375,7 @@ impl ID3D12GraphicsCommandList4 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -27825,6 +28401,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -28147,6 +28724,7 @@ impl ID3D12GraphicsCommandList4 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -28203,6 +28781,7 @@ impl ID3D12GraphicsCommandList4 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -28225,6 +28804,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -28248,6 +28828,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -28267,6 +28848,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -28292,6 +28874,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -28317,6 +28900,7 @@ impl ID3D12GraphicsCommandList4 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -28566,6 +29150,7 @@ impl ID3D12GraphicsCommandList4 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -28632,6 +29217,7 @@ impl ID3D12GraphicsCommandList4 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -28687,6 +29273,7 @@ impl ID3D12GraphicsCommandList4 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -28790,6 +29377,7 @@ unsafe impl ::windows::core::ComInterface for ID3D12GraphicsCommandList4 {
 #[doc(hidden)]
 pub struct ID3D12GraphicsCommandList4_Vtbl {
     pub base__: ID3D12GraphicsCommandList3_Vtbl,
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub BeginRenderPass: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         numrendertargets: u32,
@@ -28797,6 +29385,8 @@ pub struct ID3D12GraphicsCommandList4_Vtbl {
         pdepthstencil: *const D3D12_RENDER_PASS_DEPTH_STENCIL_DESC,
         flags: D3D12_RENDER_PASS_FLAGS,
     ),
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common")))]
+    BeginRenderPass: usize,
     pub EndRenderPass: unsafe extern "system" fn(this: *mut ::core::ffi::c_void),
     pub InitializeMetaCommand: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
@@ -28810,12 +29400,15 @@ pub struct ID3D12GraphicsCommandList4_Vtbl {
         pexecutionparametersdata: *const ::core::ffi::c_void,
         executionparametersdatasizeinbytes: usize,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub BuildRaytracingAccelerationStructure: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
         numpostbuildinfodescs: u32,
         ppostbuildinfodescs: *const D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    BuildRaytracingAccelerationStructure: usize,
     pub EmitRaytracingAccelerationStructurePostbuildInfo: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *const D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC,
@@ -29097,6 +29690,7 @@ impl ID3D12GraphicsCommandList5 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -29139,6 +29733,7 @@ impl ID3D12GraphicsCommandList5 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -29167,6 +29762,7 @@ impl ID3D12GraphicsCommandList5 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -29193,6 +29789,7 @@ impl ID3D12GraphicsCommandList5 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -29220,6 +29817,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -29563,6 +30161,7 @@ impl ID3D12GraphicsCommandList5 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -29622,6 +30221,7 @@ impl ID3D12GraphicsCommandList5 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -29645,6 +30245,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -29669,6 +30270,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -29689,6 +30291,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -29715,6 +30318,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -29741,6 +30345,7 @@ impl ID3D12GraphicsCommandList5 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -30003,6 +30608,7 @@ impl ID3D12GraphicsCommandList5 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -30073,6 +30679,7 @@ impl ID3D12GraphicsCommandList5 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -30134,6 +30741,7 @@ impl ID3D12GraphicsCommandList5 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -30549,6 +31157,7 @@ impl ID3D12GraphicsCommandList6 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -30593,6 +31202,7 @@ impl ID3D12GraphicsCommandList6 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -30622,6 +31232,7 @@ impl ID3D12GraphicsCommandList6 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -30649,6 +31260,7 @@ impl ID3D12GraphicsCommandList6 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -30678,6 +31290,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -31042,6 +31655,7 @@ impl ID3D12GraphicsCommandList6 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -31104,6 +31718,7 @@ impl ID3D12GraphicsCommandList6 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -31128,6 +31743,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -31153,6 +31769,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -31174,6 +31791,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -31201,6 +31819,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -31228,6 +31847,7 @@ impl ID3D12GraphicsCommandList6 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -31503,6 +32123,7 @@ impl ID3D12GraphicsCommandList6 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -31577,6 +32198,7 @@ impl ID3D12GraphicsCommandList6 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -31642,6 +32264,7 @@ impl ID3D12GraphicsCommandList6 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -32089,6 +32712,7 @@ impl ID3D12GraphicsCommandList7 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -32135,6 +32759,7 @@ impl ID3D12GraphicsCommandList7 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -32165,6 +32790,7 @@ impl ID3D12GraphicsCommandList7 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -32193,6 +32819,7 @@ impl ID3D12GraphicsCommandList7 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -32224,6 +32851,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -32609,6 +33237,7 @@ impl ID3D12GraphicsCommandList7 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -32674,6 +33303,7 @@ impl ID3D12GraphicsCommandList7 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -32699,6 +33329,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -32725,6 +33356,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -32747,6 +33379,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -32775,6 +33408,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -32803,6 +33437,7 @@ impl ID3D12GraphicsCommandList7 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -33091,6 +33726,7 @@ impl ID3D12GraphicsCommandList7 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -33169,6 +33805,7 @@ impl ID3D12GraphicsCommandList7 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -33238,6 +33875,7 @@ impl ID3D12GraphicsCommandList7 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -33712,6 +34350,7 @@ impl ID3D12GraphicsCommandList8 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -33760,6 +34399,7 @@ impl ID3D12GraphicsCommandList8 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -33791,6 +34431,7 @@ impl ID3D12GraphicsCommandList8 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -33820,6 +34461,7 @@ impl ID3D12GraphicsCommandList8 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -33853,6 +34495,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -34259,6 +34902,7 @@ impl ID3D12GraphicsCommandList8 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -34327,6 +34971,7 @@ impl ID3D12GraphicsCommandList8 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -34353,6 +34998,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -34380,6 +35026,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -34403,6 +35050,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -34432,6 +35080,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -34461,6 +35110,7 @@ impl ID3D12GraphicsCommandList8 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -34762,6 +35412,7 @@ impl ID3D12GraphicsCommandList8 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -34844,6 +35495,7 @@ impl ID3D12GraphicsCommandList8 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -34917,6 +35569,7 @@ impl ID3D12GraphicsCommandList8 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -35422,6 +36075,7 @@ impl ID3D12GraphicsCommandList9 {
             numbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn CopyTextureRegion(
         &self,
         pdst: *const D3D12_TEXTURE_COPY_LOCATION,
@@ -35472,6 +36126,7 @@ impl ID3D12GraphicsCommandList9 {
             psrcresource.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn CopyTiles<P0, P1>(
         &self,
         ptiledresource: P0,
@@ -35504,6 +36159,7 @@ impl ID3D12GraphicsCommandList9 {
             flags,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn ResolveSubresource<P0, P1>(
         &self,
         pdstresource: P0,
@@ -35534,6 +36190,7 @@ impl ID3D12GraphicsCommandList9 {
             format,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn IASetPrimitiveTopology(
         &self,
         primitivetopology: ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE_TOPOLOGY,
@@ -35569,6 +36226,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(pviewports.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn RSSetScissorRects(&self, prects: &[::windows::Win32::Foundation::RECT]) {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -35996,6 +36654,7 @@ impl ID3D12GraphicsCommandList9 {
             bufferlocation,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn IASetIndexBuffer(
         &self,
         pview: ::core::option::Option<*const D3D12_INDEX_BUFFER_VIEW>,
@@ -36067,6 +36726,7 @@ impl ID3D12GraphicsCommandList9 {
             ),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn OMSetRenderTargets<P0>(
         &self,
         numrendertargetdescriptors: u32,
@@ -36094,6 +36754,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(pdepthstencildescriptor.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearDepthStencilView(
         &self,
         depthstencilview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -36122,6 +36783,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearRenderTargetView(
         &self,
         rendertargetview: D3D12_CPU_DESCRIPTOR_HANDLE,
@@ -36146,6 +36808,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewUint<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -36176,6 +36839,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ClearUnorderedAccessViewFloat<P0>(
         &self,
         viewgpuhandleincurrentheap: D3D12_GPU_DESCRIPTOR_HANDLE,
@@ -36206,6 +36870,7 @@ impl ID3D12GraphicsCommandList9 {
             ::core::mem::transmute(prects.as_ptr()),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn DiscardResource<P0>(
         &self,
         presource: P0,
@@ -36520,6 +37185,7 @@ impl ID3D12GraphicsCommandList9 {
             psamplepositions,
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn ResolveSubresourceRegion<P0, P1>(
         &self,
         pdstresource: P0,
@@ -36606,6 +37272,7 @@ impl ID3D12GraphicsCommandList9 {
             pprotectedresourcesession.into_param().abi(),
         )
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn BeginRenderPass(
         &self,
         prendertargets: ::core::option::Option<&[D3D12_RENDER_PASS_RENDER_TARGET_DESC]>,
@@ -36683,6 +37350,7 @@ impl ID3D12GraphicsCommandList9 {
             executionparametersdatasizeinbytes,
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn BuildRaytracingAccelerationStructure(
         &self,
         pdesc: *const D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC,
@@ -37428,6 +38096,7 @@ impl ID3D12InfoQueue {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnCategory<P0>(
         &self,
         category: D3D12_MESSAGE_CATEGORY,
@@ -37443,6 +38112,7 @@ impl ID3D12InfoQueue {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnSeverity<P0>(
         &self,
         severity: D3D12_MESSAGE_SEVERITY,
@@ -37458,6 +38128,7 @@ impl ID3D12InfoQueue {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnID<P0>(
         &self,
         id: D3D12_MESSAGE_ID,
@@ -37473,6 +38144,7 @@ impl ID3D12InfoQueue {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnCategory(
         &self,
         category: D3D12_MESSAGE_CATEGORY,
@@ -37482,6 +38154,7 @@ impl ID3D12InfoQueue {
             category,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnSeverity(
         &self,
         severity: D3D12_MESSAGE_SEVERITY,
@@ -37491,12 +38164,14 @@ impl ID3D12InfoQueue {
             severity,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnID(&self, id: D3D12_MESSAGE_ID) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self).GetBreakOnID)(
             ::windows::core::Interface::as_raw(self),
             id,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetMuteDebugOutput<P0>(&self, bmute: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -37506,6 +38181,7 @@ impl ID3D12InfoQueue {
             bmute.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetMuteDebugOutput(&self) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self).GetMuteDebugOutput)(
             ::windows::core::Interface::as_raw(self),
@@ -37616,40 +38292,64 @@ pub struct ID3D12InfoQueue_Vtbl {
         severity: D3D12_MESSAGE_SEVERITY,
         pdescription: ::windows::core::PCSTR,
     ) -> ::windows::core::HRESULT,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetBreakOnCategory: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         category: D3D12_MESSAGE_CATEGORY,
         benable: ::windows::Win32::Foundation::BOOL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetBreakOnCategory: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetBreakOnSeverity: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         severity: D3D12_MESSAGE_SEVERITY,
         benable: ::windows::Win32::Foundation::BOOL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetBreakOnSeverity: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetBreakOnID: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         id: D3D12_MESSAGE_ID,
         benable: ::windows::Win32::Foundation::BOOL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetBreakOnID: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub GetBreakOnCategory: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         category: D3D12_MESSAGE_CATEGORY,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetBreakOnCategory: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub GetBreakOnSeverity: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         severity: D3D12_MESSAGE_SEVERITY,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetBreakOnSeverity: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub GetBreakOnID: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         id: D3D12_MESSAGE_ID,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetBreakOnID: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub SetMuteDebugOutput: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         bmute: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    SetMuteDebugOutput: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub GetMuteDebugOutput: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
     ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetMuteDebugOutput: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12InfoQueue1(::windows::core::IUnknown);
@@ -37872,6 +38572,7 @@ impl ID3D12InfoQueue1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnCategory<P0>(
         &self,
         category: D3D12_MESSAGE_CATEGORY,
@@ -37889,6 +38590,7 @@ impl ID3D12InfoQueue1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnSeverity<P0>(
         &self,
         severity: D3D12_MESSAGE_SEVERITY,
@@ -37906,6 +38608,7 @@ impl ID3D12InfoQueue1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetBreakOnID<P0>(
         &self,
         id: D3D12_MESSAGE_ID,
@@ -37921,6 +38624,7 @@ impl ID3D12InfoQueue1 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnCategory(
         &self,
         category: D3D12_MESSAGE_CATEGORY,
@@ -37929,6 +38633,7 @@ impl ID3D12InfoQueue1 {
             .base__
             .GetBreakOnCategory)(::windows::core::Interface::as_raw(self), category)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnSeverity(
         &self,
         severity: D3D12_MESSAGE_SEVERITY,
@@ -37937,12 +38642,14 @@ impl ID3D12InfoQueue1 {
             .base__
             .GetBreakOnSeverity)(::windows::core::Interface::as_raw(self), severity)
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetBreakOnID(&self, id: D3D12_MESSAGE_ID) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self).base__.GetBreakOnID)(
             ::windows::core::Interface::as_raw(self),
             id,
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn SetMuteDebugOutput<P0>(&self, bmute: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -37954,6 +38661,7 @@ impl ID3D12InfoQueue1 {
             bmute.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetMuteDebugOutput(&self) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self)
             .base__
@@ -38791,6 +39499,7 @@ impl ID3D12PipelineLibrary {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn LoadGraphicsPipeline<P0, T>(
         &self,
         pname: P0,
@@ -38885,6 +39594,7 @@ pub struct ID3D12PipelineLibrary_Vtbl {
         pname: ::windows::core::PCWSTR,
         ppipeline: *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub LoadGraphicsPipeline: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pname: ::windows::core::PCWSTR,
@@ -38892,6 +39602,8 @@ pub struct ID3D12PipelineLibrary_Vtbl {
         riid: *const ::windows::core::GUID,
         pppipelinestate: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common")))]
+    LoadGraphicsPipeline: usize,
     pub LoadComputePipeline: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pname: ::windows::core::PCWSTR,
@@ -39013,6 +39725,7 @@ impl ID3D12PipelineLibrary1 {
         )
         .ok()
     }
+    #[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
     pub unsafe fn LoadGraphicsPipeline<P0, T>(
         &self,
         pname: P0,
@@ -39223,6 +39936,7 @@ impl ID3D12PipelineState {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetCachedBlob(
         &self,
     ) -> ::windows::core::Result<::windows::Win32::Graphics::Direct3D::ID3DBlob> {
@@ -39271,10 +39985,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12PipelineState {
 #[doc(hidden)]
 pub struct ID3D12PipelineState_Vtbl {
     pub base__: ID3D12Pageable_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetCachedBlob: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         ppblob: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetCachedBlob: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12ProtectedResourceSession(::windows::core::IUnknown);
@@ -40004,6 +40721,7 @@ impl ID3D12Resource {
             ::core::mem::transmute(pwrittenrange.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetDesc(&self) -> D3D12_RESOURCE_DESC {
         let mut result__: D3D12_RESOURCE_DESC = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self).GetDesc)(
@@ -40113,10 +40831,13 @@ pub struct ID3D12Resource_Vtbl {
         subresource: u32,
         pwrittenrange: *const D3D12_RANGE,
     ),
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_DESC,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetDesc: usize,
     pub GetGPUVirtualAddress: unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u64,
     pub WriteToSubresource: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
@@ -40259,6 +40980,7 @@ impl ID3D12Resource1 {
             ::core::mem::transmute(pwrittenrange.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetDesc(&self) -> D3D12_RESOURCE_DESC {
         let mut result__: D3D12_RESOURCE_DESC = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self).base__.GetDesc)(
@@ -40508,6 +41230,7 @@ impl ID3D12Resource2 {
             ::core::mem::transmute(pwrittenrange.unwrap_or(::std::ptr::null())),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetDesc(&self) -> D3D12_RESOURCE_DESC {
         let mut result__: D3D12_RESOURCE_DESC = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self)
@@ -40595,6 +41318,7 @@ impl ID3D12Resource2 {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub unsafe fn GetDesc1(&self) -> D3D12_RESOURCE_DESC1 {
         let mut result__: D3D12_RESOURCE_DESC1 = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self).GetDesc1)(
@@ -40642,10 +41366,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12Resource2 {
 #[doc(hidden)]
 pub struct ID3D12Resource2_Vtbl {
     pub base__: ID3D12Resource1_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Dxgi_Common")]
     pub GetDesc1: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut D3D12_RESOURCE_DESC1,
     ),
+    #[cfg(not(feature = "Win32_Graphics_Dxgi_Common"))]
+    GetDesc1: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12RootSignature(::windows::core::IUnknown);
@@ -41145,6 +41872,7 @@ pub struct ID3D12ShaderCacheSession_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12ShaderReflection(::windows::core::IUnknown);
 impl ID3D12ShaderReflection {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetDesc(&self, pdesc: *mut D3D12_SHADER_DESC) -> ::windows::core::Result<()> {
         (::windows::core::Interface::vtable(self).GetDesc)(
             ::windows::core::Interface::as_raw(self),
@@ -41173,6 +41901,7 @@ impl ID3D12ShaderReflection {
             name.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetResourceBindingDesc(
         &self,
         resourceindex: u32,
@@ -41185,6 +41914,7 @@ impl ID3D12ShaderReflection {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetInputParameterDesc(
         &self,
         parameterindex: u32,
@@ -41197,6 +41927,7 @@ impl ID3D12ShaderReflection {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetOutputParameterDesc(
         &self,
         parameterindex: u32,
@@ -41209,6 +41940,7 @@ impl ID3D12ShaderReflection {
         )
         .ok()
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetPatchConstantParameterDesc(
         &self,
         parameterindex: u32,
@@ -41233,6 +41965,7 @@ impl ID3D12ShaderReflection {
             name.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetResourceBindingDescByName<P0>(
         &self,
         name: P0,
@@ -41268,6 +42001,7 @@ impl ID3D12ShaderReflection {
             ::windows::core::Interface::as_raw(self),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetGSInputPrimitive(
         &self,
     ) -> ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE {
@@ -41275,6 +42009,7 @@ impl ID3D12ShaderReflection {
             ::windows::core::Interface::as_raw(self),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn IsSampleFrequencyShader(&self) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self).IsSampleFrequencyShader)(
             ::windows::core::Interface::as_raw(self),
@@ -41285,6 +42020,7 @@ impl ID3D12ShaderReflection {
             ::windows::core::Interface::as_raw(self),
         )
     }
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetMinFeatureLevel(
         &self,
     ) -> ::windows::core::Result<::windows::Win32::Graphics::Direct3D::D3D_FEATURE_LEVEL> {
@@ -41347,10 +42083,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12ShaderReflection {
 #[doc(hidden)]
 pub struct ID3D12ShaderReflection_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *mut D3D12_SHADER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetDesc: usize,
     pub GetConstantBufferByIndex: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         index: u32,
@@ -41363,56 +42102,80 @@ pub struct ID3D12ShaderReflection_Vtbl {
     ) -> ::core::option::Option<
         ID3D12ShaderReflectionConstantBuffer,
     >,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         resourceindex: u32,
         pdesc: *mut D3D12_SHADER_INPUT_BIND_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetResourceBindingDesc: usize,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetInputParameterDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         parameterindex: u32,
         pdesc: *mut D3D12_SIGNATURE_PARAMETER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetInputParameterDesc: usize,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetOutputParameterDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         parameterindex: u32,
         pdesc: *mut D3D12_SIGNATURE_PARAMETER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetOutputParameterDesc: usize,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetPatchConstantParameterDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         parameterindex: u32,
         pdesc: *mut D3D12_SIGNATURE_PARAMETER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetPatchConstantParameterDesc: usize,
     pub GetVariableByName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         name: ::windows::core::PCSTR,
     ) -> ::core::option::Option<
         ID3D12ShaderReflectionVariable,
     >,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetResourceBindingDescByName: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         name: ::windows::core::PCSTR,
         pdesc: *mut D3D12_SHADER_INPUT_BIND_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetResourceBindingDescByName: usize,
     pub GetMovInstructionCount: unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u32,
     pub GetMovcInstructionCount: unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u32,
     pub GetConversionInstructionCount:
         unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u32,
     pub GetBitwiseInstructionCount:
         unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u32,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetGSInputPrimitive:
         unsafe extern "system" fn(
             this: *mut ::core::ffi::c_void,
         ) -> ::windows::Win32::Graphics::Direct3D::D3D_PRIMITIVE,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetGSInputPrimitive: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub IsSampleFrequencyShader: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
     )
         -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    IsSampleFrequencyShader: usize,
     pub GetNumInterfaceSlots: unsafe extern "system" fn(this: *mut ::core::ffi::c_void) -> u32,
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetMinFeatureLevel: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         plevel: *mut ::windows::Win32::Graphics::Direct3D::D3D_FEATURE_LEVEL,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetMinFeatureLevel: usize,
     pub GetThreadGroupSize: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         psizex: *mut u32,
@@ -41424,6 +42187,7 @@ pub struct ID3D12ShaderReflection_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12ShaderReflectionConstantBuffer(::std::ptr::NonNull<::std::ffi::c_void>);
 impl ID3D12ShaderReflectionConstantBuffer {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetDesc(
         &self,
         pdesc: *mut D3D12_SHADER_BUFFER_DESC,
@@ -41482,10 +42246,13 @@ impl ::core::clone::Clone for ID3D12ShaderReflectionConstantBuffer {
 #[repr(C)]
 #[doc(hidden)]
 pub struct ID3D12ShaderReflectionConstantBuffer_Vtbl {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *mut D3D12_SHADER_BUFFER_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetDesc: usize,
     pub GetVariableByIndex: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         index: u32,
@@ -41502,6 +42269,7 @@ pub struct ID3D12ShaderReflectionConstantBuffer_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12ShaderReflectionType(::std::ptr::NonNull<::std::ffi::c_void>);
 impl ID3D12ShaderReflectionType {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub unsafe fn GetDesc(
         &self,
         pdesc: *mut D3D12_SHADER_TYPE_DESC,
@@ -41620,10 +42388,13 @@ impl ::core::clone::Clone for ID3D12ShaderReflectionType {
 #[repr(C)]
 #[doc(hidden)]
 pub struct ID3D12ShaderReflectionType_Vtbl {
+    #[cfg(feature = "Win32_Graphics_Direct3D")]
     pub GetDesc: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pdesc: *mut D3D12_SHADER_TYPE_DESC,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Graphics_Direct3D"))]
+    GetDesc: usize,
     pub GetMemberTypeByIndex:
         unsafe extern "system" fn(
             this: *mut ::core::ffi::c_void,
@@ -41738,6 +42509,7 @@ pub struct ID3D12ShaderReflectionVariable_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12SharingContract(::windows::core::IUnknown);
 impl ID3D12SharingContract {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn Present<P0, P1>(&self, presource: P0, subresource: u32, window: P1)
     where
         P0: ::windows::core::IntoParam<ID3D12Resource>,
@@ -41805,12 +42577,15 @@ unsafe impl ::windows::core::ComInterface for ID3D12SharingContract {
 #[doc(hidden)]
 pub struct ID3D12SharingContract_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub Present: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         presource: *mut ::core::ffi::c_void,
         subresource: u32,
         window: ::windows::Win32::Foundation::HWND,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    Present: usize,
     pub SharedFenceSignal: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pfence: *mut ::core::ffi::c_void,
@@ -42032,6 +42807,7 @@ pub struct ID3D12StateObjectProperties_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12SwapChainAssistant(::windows::core::IUnknown);
 impl ID3D12SwapChainAssistant {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn GetLUID(&self) -> ::windows::Win32::Foundation::LUID {
         let mut result__: ::windows::Win32::Foundation::LUID = ::core::mem::zeroed();
         (::windows::core::Interface::vtable(self).GetLUID)(
@@ -42109,10 +42885,13 @@ unsafe impl ::windows::core::ComInterface for ID3D12SwapChainAssistant {
 #[doc(hidden)]
 pub struct ID3D12SwapChainAssistant_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub GetLUID: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         result__: *mut ::windows::Win32::Foundation::LUID,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    GetLUID: usize,
     pub GetSwapChainObject: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         riid: *const ::windows::core::GUID,
@@ -42132,6 +42911,7 @@ pub struct ID3D12SwapChainAssistant_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12Tools(::windows::core::IUnknown);
 impl ID3D12Tools {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn EnableShaderInstrumentation<P0>(&self, benable: P0)
     where
         P0: ::windows::core::IntoParam<::windows::Win32::Foundation::BOOL>,
@@ -42141,6 +42921,7 @@ impl ID3D12Tools {
             benable.into_param().abi(),
         )
     }
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ShaderInstrumentationEnabled(&self) -> ::windows::Win32::Foundation::BOOL {
         (::windows::core::Interface::vtable(self).ShaderInstrumentationEnabled)(
             ::windows::core::Interface::as_raw(self),
@@ -42177,14 +42958,20 @@ unsafe impl ::windows::core::ComInterface for ID3D12Tools {
 #[doc(hidden)]
 pub struct ID3D12Tools_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub EnableShaderInstrumentation: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         benable: ::windows::Win32::Foundation::BOOL,
     ),
+    #[cfg(not(feature = "Win32_Foundation"))]
+    EnableShaderInstrumentation: usize,
+    #[cfg(feature = "Win32_Foundation")]
     pub ShaderInstrumentationEnabled:
         unsafe extern "system" fn(
             this: *mut ::core::ffi::c_void,
         ) -> ::windows::Win32::Foundation::BOOL,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ShaderInstrumentationEnabled: usize,
 }
 #[repr(transparent)]
 pub struct ID3D12VersionedRootSignatureDeserializer(::windows::core::IUnknown);
@@ -42257,6 +43044,7 @@ pub struct ID3D12VersionedRootSignatureDeserializer_Vtbl {
 #[repr(transparent)]
 pub struct ID3D12VirtualizationGuestDevice(::windows::core::IUnknown);
 impl ID3D12VirtualizationGuestDevice {
+    #[cfg(feature = "Win32_Foundation")]
     pub unsafe fn ShareWithHost<P0>(
         &self,
         pobject: P0,
@@ -42322,11 +43110,14 @@ unsafe impl ::windows::core::ComInterface for ID3D12VirtualizationGuestDevice {
 #[doc(hidden)]
 pub struct ID3D12VirtualizationGuestDevice_Vtbl {
     pub base__: ::windows::core::IUnknown_Vtbl,
+    #[cfg(feature = "Win32_Foundation")]
     pub ShareWithHost: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pobject: *mut ::core::ffi::c_void,
         phandle: *mut ::windows::Win32::Foundation::HANDLE,
     ) -> ::windows::core::HRESULT,
+    #[cfg(not(feature = "Win32_Foundation"))]
+    ShareWithHost: usize,
     pub CreateFenceFd: unsafe extern "system" fn(
         this: *mut ::core::ffi::c_void,
         pfence: *mut ::core::ffi::c_void,
@@ -52107,17 +52898,21 @@ impl ::core::default::Default for D3D12_BARRIER_SUBRESOURCE_RANGE {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_BLEND_DESC {
     pub AlphaToCoverageEnable: ::windows::Win32::Foundation::BOOL,
     pub IndependentBlendEnable: ::windows::Win32::Foundation::BOOL,
     pub RenderTarget: [D3D12_RENDER_TARGET_BLEND_DESC; 8],
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_BLEND_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_BLEND_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_BLEND_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_BLEND_DESC")
@@ -52127,9 +52922,11 @@ impl ::core::fmt::Debug for D3D12_BLEND_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_BLEND_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_BLEND_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.AlphaToCoverageEnable == other.AlphaToCoverageEnable
@@ -52137,7 +52934,9 @@ impl ::core::cmp::PartialEq for D3D12_BLEND_DESC {
             && self.RenderTarget == other.RenderTarget
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_BLEND_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_BLEND_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -52354,27 +53153,33 @@ impl ::core::default::Default for D3D12_BUFFER_UAV {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC {
     pub DestAccelerationStructureData: u64,
     pub Inputs: D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS,
     pub SourceAccelerationStructureData: u64,
     pub ScratchAccelerationStructureData: u64,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {
     pub Type: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE,
     pub Flags: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS,
@@ -52382,35 +53187,44 @@ pub struct D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {
     pub DescsLayout: D3D12_ELEMENTS_LAYOUT,
     pub Anonymous: D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0 {
     pub InstanceDescs: u64,
     pub pGeometryDescs: *const D3D12_RAYTRACING_GEOMETRY_DESC,
     pub ppGeometryDescs: *const *const D3D12_RAYTRACING_GEOMETRY_DESC,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -52497,38 +53311,48 @@ impl ::core::default::Default for D3D12_CACHED_PIPELINE_STATE {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_CLEAR_VALUE {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub Anonymous: D3D12_CLEAR_VALUE_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_CLEAR_VALUE {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_CLEAR_VALUE {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_CLEAR_VALUE {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_CLEAR_VALUE {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_CLEAR_VALUE_0 {
     pub Color: [f32; 4],
     pub DepthStencil: D3D12_DEPTH_STENCIL_VALUE,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_CLEAR_VALUE_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_CLEAR_VALUE_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_CLEAR_VALUE_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_CLEAR_VALUE_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -52906,6 +53730,7 @@ impl ::core::default::Default for D3D12_DEPTH_STENCILOP_DESC1 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_DEPTH_STENCIL_DESC {
     pub DepthEnable: ::windows::Win32::Foundation::BOOL,
     pub DepthWriteMask: D3D12_DEPTH_WRITE_MASK,
@@ -52916,12 +53741,15 @@ pub struct D3D12_DEPTH_STENCIL_DESC {
     pub FrontFace: D3D12_DEPTH_STENCILOP_DESC,
     pub BackFace: D3D12_DEPTH_STENCILOP_DESC,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_DEPTH_STENCIL_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_DEPTH_STENCIL_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_DEPTH_STENCIL_DESC")
@@ -52936,9 +53764,11 @@ impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_DEPTH_STENCIL_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.DepthEnable == other.DepthEnable
@@ -52951,13 +53781,16 @@ impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC {
             && self.BackFace == other.BackFace
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_DEPTH_STENCIL_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_DEPTH_STENCIL_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_DEPTH_STENCIL_DESC1 {
     pub DepthEnable: ::windows::Win32::Foundation::BOOL,
     pub DepthWriteMask: D3D12_DEPTH_WRITE_MASK,
@@ -52969,12 +53802,15 @@ pub struct D3D12_DEPTH_STENCIL_DESC1 {
     pub BackFace: D3D12_DEPTH_STENCILOP_DESC,
     pub DepthBoundsTestEnable: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_DEPTH_STENCIL_DESC1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_DEPTH_STENCIL_DESC1 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC1 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_DEPTH_STENCIL_DESC1")
@@ -52990,9 +53826,11 @@ impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC1 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_DEPTH_STENCIL_DESC1 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC1 {
     fn eq(&self, other: &Self) -> bool {
         self.DepthEnable == other.DepthEnable
@@ -53006,13 +53844,16 @@ impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC1 {
             && self.DepthBoundsTestEnable == other.DepthBoundsTestEnable
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_DEPTH_STENCIL_DESC1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_DEPTH_STENCIL_DESC1 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_DEPTH_STENCIL_DESC2 {
     pub DepthEnable: ::windows::Win32::Foundation::BOOL,
     pub DepthWriteMask: D3D12_DEPTH_WRITE_MASK,
@@ -53022,12 +53863,15 @@ pub struct D3D12_DEPTH_STENCIL_DESC2 {
     pub BackFace: D3D12_DEPTH_STENCILOP_DESC1,
     pub DepthBoundsTestEnable: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_DEPTH_STENCIL_DESC2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_DEPTH_STENCIL_DESC2 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC2 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_DEPTH_STENCIL_DESC2")
@@ -53041,9 +53885,11 @@ impl ::core::fmt::Debug for D3D12_DEPTH_STENCIL_DESC2 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_DEPTH_STENCIL_DESC2 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC2 {
     fn eq(&self, other: &Self) -> bool {
         self.DepthEnable == other.DepthEnable
@@ -53055,7 +53901,9 @@ impl ::core::cmp::PartialEq for D3D12_DEPTH_STENCIL_DESC2 {
             && self.DepthBoundsTestEnable == other.DepthBoundsTestEnable
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_DEPTH_STENCIL_DESC2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_DEPTH_STENCIL_DESC2 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -53095,27 +53943,33 @@ impl ::core::default::Default for D3D12_DEPTH_STENCIL_VALUE {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_DEPTH_STENCIL_VIEW_DESC {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub ViewDimension: D3D12_DSV_DIMENSION,
     pub Flags: D3D12_DSV_FLAGS,
     pub Anonymous: D3D12_DEPTH_STENCIL_VIEW_DESC_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_DEPTH_STENCIL_VIEW_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_DEPTH_STENCIL_VIEW_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_DEPTH_STENCIL_VIEW_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_DEPTH_STENCIL_VIEW_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_DEPTH_STENCIL_VIEW_DESC_0 {
     pub Texture1D: D3D12_TEX1D_DSV,
     pub Texture1DArray: D3D12_TEX1D_ARRAY_DSV,
@@ -53124,15 +53978,19 @@ pub union D3D12_DEPTH_STENCIL_VIEW_DESC_0 {
     pub Texture2DMS: D3D12_TEX2DMS_DSV,
     pub Texture2DMSArray: D3D12_TEX2DMS_ARRAY_DSV,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_DEPTH_STENCIL_VIEW_DESC_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_DEPTH_STENCIL_VIEW_DESC_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_DEPTH_STENCIL_VIEW_DESC_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_DEPTH_STENCIL_VIEW_DESC_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -53464,18 +54322,22 @@ impl ::core::default::Default for D3D12_DEVICE_REMOVED_EXTENDED_DATA3 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_DISCARD_REGION {
     pub NumRects: u32,
     pub pRects: *const ::windows::Win32::Foundation::RECT,
     pub FirstSubresource: u32,
     pub NumSubresources: u32,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_DISCARD_REGION {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_DISCARD_REGION {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_DISCARD_REGION {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_DISCARD_REGION")
@@ -53486,9 +54348,11 @@ impl ::core::fmt::Debug for D3D12_DISCARD_REGION {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_DISCARD_REGION {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_DISCARD_REGION {
     fn eq(&self, other: &Self) -> bool {
         self.NumRects == other.NumRects
@@ -53497,7 +54361,9 @@ impl ::core::cmp::PartialEq for D3D12_DISCARD_REGION {
             && self.NumSubresources == other.NumSubresources
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_DISCARD_REGION {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_DISCARD_REGION {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -54166,18 +55032,22 @@ impl ::core::default::Default for D3D12_EXPORT_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_ARCHITECTURE {
     pub NodeIndex: u32,
     pub TileBasedRenderer: ::windows::Win32::Foundation::BOOL,
     pub UMA: ::windows::Win32::Foundation::BOOL,
     pub CacheCoherentUMA: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_ARCHITECTURE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_ARCHITECTURE {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_ARCHITECTURE {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_ARCHITECTURE")
@@ -54188,9 +55058,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_ARCHITECTURE {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_ARCHITECTURE {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_ARCHITECTURE {
     fn eq(&self, other: &Self) -> bool {
         self.NodeIndex == other.NodeIndex
@@ -54199,13 +55071,16 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_ARCHITECTURE {
             && self.CacheCoherentUMA == other.CacheCoherentUMA
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_ARCHITECTURE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_ARCHITECTURE {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_ARCHITECTURE1 {
     pub NodeIndex: u32,
     pub TileBasedRenderer: ::windows::Win32::Foundation::BOOL,
@@ -54213,12 +55088,15 @@ pub struct D3D12_FEATURE_DATA_ARCHITECTURE1 {
     pub CacheCoherentUMA: ::windows::Win32::Foundation::BOOL,
     pub IsolatedMMU: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_ARCHITECTURE1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_ARCHITECTURE1 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_ARCHITECTURE1 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_ARCHITECTURE1")
@@ -54230,9 +55108,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_ARCHITECTURE1 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_ARCHITECTURE1 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_ARCHITECTURE1 {
     fn eq(&self, other: &Self) -> bool {
         self.NodeIndex == other.NodeIndex
@@ -54242,24 +55122,30 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_ARCHITECTURE1 {
             && self.IsolatedMMU == other.IsolatedMMU
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_ARCHITECTURE1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_ARCHITECTURE1 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     pub CommandListType: D3D12_COMMAND_LIST_TYPE,
     pub Priority: u32,
     pub PriorityForTypeIsSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY")
@@ -54272,9 +55158,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     fn eq(&self, other: &Self) -> bool {
         self.CommandListType == other.CommandListType
@@ -54282,23 +55170,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
             && self.PriorityForTypeIsSupported == other.PriorityForTypeIsSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_CROSS_NODE {
     pub SharingTier: D3D12_CROSS_NODE_SHARING_TIER,
     pub AtomicShaderInstructions: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_CROSS_NODE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_CROSS_NODE {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_CROSS_NODE {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_CROSS_NODE")
@@ -54307,22 +55201,27 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_CROSS_NODE {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_CROSS_NODE {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_CROSS_NODE {
     fn eq(&self, other: &Self) -> bool {
         self.SharingTier == other.SharingTier
             && self.AtomicShaderInstructions == other.AtomicShaderInstructions
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_CROSS_NODE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_CROSS_NODE {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS {
     pub DoublePrecisionFloatShaderOps: ::windows::Win32::Foundation::BOOL,
     pub OutputMergerLogicOp: ::windows::Win32::Foundation::BOOL,
@@ -54341,12 +55240,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS {
         ::windows::Win32::Foundation::BOOL,
     pub ResourceHeapTier: D3D12_RESOURCE_HEAP_TIER,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS")
@@ -54392,9 +55294,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS {
     fn eq(&self, other: &Self) -> bool {
         self.DoublePrecisionFloatShaderOps == other.DoublePrecisionFloatShaderOps
@@ -54416,13 +55320,16 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS {
             && self.ResourceHeapTier == other.ResourceHeapTier
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     pub WaveOps: ::windows::Win32::Foundation::BOOL,
     pub WaveLaneCountMin: u32,
@@ -54431,12 +55338,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     pub ExpandedComputeResourceStates: ::windows::Win32::Foundation::BOOL,
     pub Int64ShaderOps: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS1")
@@ -54452,9 +55362,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     fn eq(&self, other: &Self) -> bool {
         self.WaveOps == other.WaveOps
@@ -54465,23 +55377,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
             && self.Int64ShaderOps == other.Int64ShaderOps
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS1 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     pub VariableRateShadingSumCombinerSupported: ::windows::Win32::Foundation::BOOL,
     pub MeshShaderPerPrimitiveShadingRateSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS10")
@@ -54496,9 +55414,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     fn eq(&self, other: &Self) -> bool {
         self.VariableRateShadingSumCombinerSupported
@@ -54507,22 +55427,28 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
                 == other.MeshShaderPerPrimitiveShadingRateSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS10 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     pub AtomicInt64OnDescriptorHeapResourceSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS11")
@@ -54533,33 +55459,41 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     fn eq(&self, other: &Self) -> bool {
         self.AtomicInt64OnDescriptorHeapResourceSupported
             == other.AtomicInt64OnDescriptorHeapResourceSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS11 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     pub MSPrimitivesPipelineStatisticIncludesCulledPrimitives: D3D12_TRI_STATE,
     pub EnhancedBarriersSupported: ::windows::Win32::Foundation::BOOL,
     pub RelaxedFormatCastingSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS12")
@@ -54575,9 +55509,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     fn eq(&self, other: &Self) -> bool {
         self.MSPrimitivesPipelineStatisticIncludesCulledPrimitives
@@ -54586,13 +55522,16 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
             && self.RelaxedFormatCastingSupported == other.RelaxedFormatCastingSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS12 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     pub UnrestrictedBufferTextureCopyPitchSupported: ::windows::Win32::Foundation::BOOL,
     pub UnrestrictedVertexElementAlignmentSupported: ::windows::Win32::Foundation::BOOL,
@@ -54601,12 +55540,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     pub TextureCopyBetweenDimensionsSupported: ::windows::Win32::Foundation::BOOL,
     pub AlphaBlendFactorSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS13")
@@ -54634,9 +55576,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     fn eq(&self, other: &Self) -> bool {
         self.UnrestrictedBufferTextureCopyPitchSupported
@@ -54652,24 +55596,30 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
             && self.AlphaBlendFactorSupported == other.AlphaBlendFactorSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS13 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     pub AdvancedTextureOpsSupported: ::windows::Win32::Foundation::BOOL,
     pub WriteableMSAATexturesSupported: ::windows::Win32::Foundation::BOOL,
     pub IndependentFrontAndBackStencilRefMaskSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS14")
@@ -54688,9 +55638,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     fn eq(&self, other: &Self) -> bool {
         self.AdvancedTextureOpsSupported == other.AdvancedTextureOpsSupported
@@ -54699,23 +55651,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
                 == other.IndependentFrontAndBackStencilRefMaskSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS14 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     pub TriangleFanSupported: ::windows::Win32::Foundation::BOOL,
     pub DynamicIndexBufferStripCutSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS15")
@@ -54727,32 +55685,40 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     fn eq(&self, other: &Self) -> bool {
         self.TriangleFanSupported == other.TriangleFanSupported
             && self.DynamicIndexBufferStripCutSupported == other.DynamicIndexBufferStripCutSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS15 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     pub DynamicDepthBiasSupported: ::windows::Win32::Foundation::BOOL,
     pub GPUUploadHeapSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS16")
@@ -54761,32 +55727,40 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     fn eq(&self, other: &Self) -> bool {
         self.DynamicDepthBiasSupported == other.DynamicDepthBiasSupported
             && self.GPUUploadHeapSupported == other.GPUUploadHeapSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS16 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     pub NonNormalizedCoordinateSamplersSupported: ::windows::Win32::Foundation::BOOL,
     pub ManualWriteTrackingResourceSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS17")
@@ -54801,9 +55775,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     fn eq(&self, other: &Self) -> bool {
         self.NonNormalizedCoordinateSamplersSupported
@@ -54812,22 +55788,28 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
                 == other.ManualWriteTrackingResourceSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS17 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     pub RenderPassesValid: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS18")
@@ -54835,21 +55817,26 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     fn eq(&self, other: &Self) -> bool {
         self.RenderPassesValid == other.RenderPassesValid
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS18 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     pub MismatchingOutputDimensionsSupported: ::windows::Win32::Foundation::BOOL,
     pub SupportedSampleCountsWithNoOutputs: u32,
@@ -54862,12 +55849,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     pub MaxViewDescriptorHeapSize: u32,
     pub ComputeOnlyCustomHeapSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS19")
@@ -54908,9 +55898,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     fn eq(&self, other: &Self) -> bool {
         self.MismatchingOutputDimensionsSupported == other.MismatchingOutputDimensionsSupported
@@ -54926,23 +55918,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
             && self.ComputeOnlyCustomHeapSupported == other.ComputeOnlyCustomHeapSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS19 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     pub DepthBoundsTestSupported: ::windows::Win32::Foundation::BOOL,
     pub ProgrammableSamplePositionsTier: D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS2")
@@ -54954,22 +55952,27 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     fn eq(&self, other: &Self) -> bool {
         self.DepthBoundsTestSupported == other.DepthBoundsTestSupported
             && self.ProgrammableSamplePositionsTier == other.ProgrammableSamplePositionsTier
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS2 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     pub CopyQueueTimestampQueriesSupported: ::windows::Win32::Foundation::BOOL,
     pub CastingFullyTypedFormatSupported: ::windows::Win32::Foundation::BOOL,
@@ -54977,12 +55980,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     pub ViewInstancingTier: D3D12_VIEW_INSTANCING_TIER,
     pub BarycentricsSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS3")
@@ -55003,9 +56009,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     fn eq(&self, other: &Self) -> bool {
         self.CopyQueueTimestampQueriesSupported == other.CopyQueueTimestampQueriesSupported
@@ -55015,24 +56023,30 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
             && self.BarycentricsSupported == other.BarycentricsSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS3 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     pub MSAA64KBAlignedTextureSupported: ::windows::Win32::Foundation::BOOL,
     pub SharedResourceCompatibilityTier: D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER,
     pub Native16BitShaderOpsSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS4")
@@ -55051,9 +56065,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     fn eq(&self, other: &Self) -> bool {
         self.MSAA64KBAlignedTextureSupported == other.MSAA64KBAlignedTextureSupported
@@ -55061,24 +56077,30 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
             && self.Native16BitShaderOpsSupported == other.Native16BitShaderOpsSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS4 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     pub SRVOnlyTiledResourceTier3: ::windows::Win32::Foundation::BOOL,
     pub RenderPassesTier: D3D12_RENDER_PASS_TIER,
     pub RaytracingTier: D3D12_RAYTRACING_TIER,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS5")
@@ -55088,9 +56110,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     fn eq(&self, other: &Self) -> bool {
         self.SRVOnlyTiledResourceTier3 == other.SRVOnlyTiledResourceTier3
@@ -55098,13 +56122,16 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
             && self.RaytracingTier == other.RaytracingTier
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS5 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     pub AdditionalShadingRatesSupported: ::windows::Win32::Foundation::BOOL,
     pub PerPrimitiveShadingRateSupportedWithViewportIndexing: ::windows::Win32::Foundation::BOOL,
@@ -55112,12 +56139,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     pub ShadingRateImageTileSize: u32,
     pub BackgroundProcessingSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS6")
@@ -55138,9 +56168,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     fn eq(&self, other: &Self) -> bool {
         self.AdditionalShadingRatesSupported == other.AdditionalShadingRatesSupported
@@ -55151,7 +56183,9 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
             && self.BackgroundProcessingSupported == other.BackgroundProcessingSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS6 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -55192,15 +56226,19 @@ impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS7 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     pub UnalignedBlockTexturesSupported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS8")
@@ -55211,21 +56249,26 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     fn eq(&self, other: &Self) -> bool {
         self.UnalignedBlockTexturesSupported == other.UnalignedBlockTexturesSupported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS8 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     pub MeshShaderPipelineStatsSupported: ::windows::Win32::Foundation::BOOL,
     pub MeshShaderSupportsFullRangeRenderTargetArrayIndex: ::windows::Win32::Foundation::BOOL,
@@ -55234,12 +56277,15 @@ pub struct D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     pub DerivativesInMeshAndAmplificationShadersSupported: ::windows::Win32::Foundation::BOOL,
     pub WaveMMATier: D3D12_WAVE_MMA_TIER,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_D3D12_OPTIONS9")
@@ -55267,9 +56313,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     fn eq(&self, other: &Self) -> bool {
         self.MeshShaderPipelineStatsSupported == other.MeshShaderPipelineStatsSupported
@@ -55282,23 +56330,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
             && self.WaveMMATier == other.WaveMMATier
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_D3D12_OPTIONS9 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_DISPLAYABLE {
     pub DisplayableTexture: ::windows::Win32::Foundation::BOOL,
     pub SharedResourceCompatibilityTier: D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_DISPLAYABLE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_DISPLAYABLE {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_DISPLAYABLE {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_DISPLAYABLE")
@@ -55310,31 +56364,39 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_DISPLAYABLE {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_DISPLAYABLE {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_DISPLAYABLE {
     fn eq(&self, other: &Self) -> bool {
         self.DisplayableTexture == other.DisplayableTexture
             && self.SharedResourceCompatibilityTier == other.SharedResourceCompatibilityTier
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_DISPLAYABLE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_DISPLAYABLE {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_FEATURE_DATA_EXISTING_HEAPS {
     pub Supported: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_EXISTING_HEAPS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_EXISTING_HEAPS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_EXISTING_HEAPS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_EXISTING_HEAPS")
@@ -55342,32 +56404,40 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_EXISTING_HEAPS {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_EXISTING_HEAPS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_EXISTING_HEAPS {
     fn eq(&self, other: &Self) -> bool {
         self.Supported == other.Supported
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_EXISTING_HEAPS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_EXISTING_HEAPS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_FEATURE_DATA_FEATURE_LEVELS {
     pub NumFeatureLevels: u32,
     pub pFeatureLevelsRequested: *const ::windows::Win32::Graphics::Direct3D::D3D_FEATURE_LEVEL,
     pub MaxSupportedFeatureLevel: ::windows::Win32::Graphics::Direct3D::D3D_FEATURE_LEVEL,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_FEATURE_LEVELS {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_FEATURE_LEVELS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FEATURE_LEVELS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_FEATURE_LEVELS")
@@ -55377,9 +56447,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FEATURE_LEVELS {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_FEATURE_LEVELS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_FEATURE_LEVELS {
     fn eq(&self, other: &Self) -> bool {
         self.NumFeatureLevels == other.NumFeatureLevels
@@ -55387,23 +56459,29 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_FEATURE_LEVELS {
             && self.MaxSupportedFeatureLevel == other.MaxSupportedFeatureLevel
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_FEATURE_LEVELS {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_FEATURE_LEVELS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_FEATURE_DATA_FORMAT_INFO {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub PlaneCount: u8,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_FORMAT_INFO {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_FORMAT_INFO {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FORMAT_INFO {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_FORMAT_INFO")
@@ -55412,32 +56490,40 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FORMAT_INFO {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_FORMAT_INFO {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_FORMAT_INFO {
     fn eq(&self, other: &Self) -> bool {
         self.Format == other.Format && self.PlaneCount == other.PlaneCount
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_FORMAT_INFO {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_FORMAT_INFO {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub Support1: D3D12_FORMAT_SUPPORT1,
     pub Support2: D3D12_FORMAT_SUPPORT2,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_FORMAT_SUPPORT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_FORMAT_SUPPORT")
@@ -55447,9 +56533,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     fn eq(&self, other: &Self) -> bool {
         self.Format == other.Format
@@ -55457,7 +56545,9 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
             && self.Support2 == other.Support2
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_FORMAT_SUPPORT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_FORMAT_SUPPORT {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -55504,18 +56594,22 @@ impl ::core::default::Default for D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub SampleCount: u32,
     pub Flags: D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS,
     pub NumQualityLevels: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS")
@@ -55526,9 +56620,11 @@ impl ::core::fmt::Debug for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     fn eq(&self, other: &Self) -> bool {
         self.Format == other.Format
@@ -55537,7 +56633,9 @@ impl ::core::cmp::PartialEq for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
             && self.NumQualityLevels == other.NumQualityLevels
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -55823,6 +56921,7 @@ impl ::core::default::Default for D3D12_FEATURE_DATA_SHADER_MODEL {
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 pub struct D3D12_FUNCTION_DESC {
     pub Version: u32,
     pub Creator: ::windows::core::PCSTR,
@@ -55858,12 +56957,15 @@ pub struct D3D12_FUNCTION_DESC {
     pub Has10Level9VertexShader: ::windows::Win32::Foundation::BOOL,
     pub Has10Level9PixelShader: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::marker::Copy for D3D12_FUNCTION_DESC {}
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::clone::Clone for D3D12_FUNCTION_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::fmt::Debug for D3D12_FUNCTION_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_FUNCTION_DESC")
@@ -55909,9 +57011,11 @@ impl ::core::fmt::Debug for D3D12_FUNCTION_DESC {
             .finish()
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::windows::core::TypeKind for D3D12_FUNCTION_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::cmp::PartialEq for D3D12_FUNCTION_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Version == other.Version
@@ -55949,7 +57053,9 @@ impl ::core::cmp::PartialEq for D3D12_FUNCTION_DESC {
             && self.Has10Level9PixelShader == other.Has10Level9PixelShader
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::cmp::Eq for D3D12_FUNCTION_DESC {}
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Direct3D"))]
 impl ::core::default::Default for D3D12_FUNCTION_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -56160,6 +57266,7 @@ impl ::core::default::Default for D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE {
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub struct D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     pub pRootSignature: ::std::mem::ManuallyDrop<::core::option::Option<ID3D12RootSignature>>,
     pub VS: D3D12_SHADER_BYTECODE,
@@ -56183,11 +57290,13 @@ pub struct D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     pub CachedPSO: D3D12_CACHED_PIPELINE_STATE,
     pub Flags: D3D12_PIPELINE_STATE_FLAGS,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::fmt::Debug for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_GRAPHICS_PIPELINE_STATE_DESC")
@@ -56215,9 +57324,11 @@ impl ::core::fmt::Debug for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
             .finish()
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::cmp::PartialEq for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.pRootSignature == other.pRootSignature
@@ -56243,7 +57354,9 @@ impl ::core::cmp::PartialEq for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
             && self.Flags == other.Flags
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::cmp::Eq for D3D12_GRAPHICS_PIPELINE_STATE_DESC {}
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_GRAPHICS_PIPELINE_STATE_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -56376,17 +57489,21 @@ impl ::core::default::Default for D3D12_HIT_GROUP_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_INDEX_BUFFER_VIEW {
     pub BufferLocation: u64,
     pub SizeInBytes: u32,
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_INDEX_BUFFER_VIEW {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_INDEX_BUFFER_VIEW {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_INDEX_BUFFER_VIEW {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_INDEX_BUFFER_VIEW")
@@ -56396,9 +57513,11 @@ impl ::core::fmt::Debug for D3D12_INDEX_BUFFER_VIEW {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_INDEX_BUFFER_VIEW {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_INDEX_BUFFER_VIEW {
     fn eq(&self, other: &Self) -> bool {
         self.BufferLocation == other.BufferLocation
@@ -56406,7 +57525,9 @@ impl ::core::cmp::PartialEq for D3D12_INDEX_BUFFER_VIEW {
             && self.Format == other.Format
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_INDEX_BUFFER_VIEW {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_INDEX_BUFFER_VIEW {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -56694,6 +57815,7 @@ impl ::core::default::Default for D3D12_INFO_QUEUE_FILTER_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_INPUT_ELEMENT_DESC {
     pub SemanticName: ::windows::core::PCSTR,
     pub SemanticIndex: u32,
@@ -56703,12 +57825,15 @@ pub struct D3D12_INPUT_ELEMENT_DESC {
     pub InputSlotClass: D3D12_INPUT_CLASSIFICATION,
     pub InstanceDataStepRate: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_INPUT_ELEMENT_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_INPUT_ELEMENT_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_INPUT_ELEMENT_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_INPUT_ELEMENT_DESC")
@@ -56722,9 +57847,11 @@ impl ::core::fmt::Debug for D3D12_INPUT_ELEMENT_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_INPUT_ELEMENT_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_INPUT_ELEMENT_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.SemanticName == other.SemanticName
@@ -56736,23 +57863,29 @@ impl ::core::cmp::PartialEq for D3D12_INPUT_ELEMENT_DESC {
             && self.InstanceDataStepRate == other.InstanceDataStepRate
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_INPUT_ELEMENT_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_INPUT_ELEMENT_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_INPUT_LAYOUT_DESC {
     pub pInputElementDescs: *const D3D12_INPUT_ELEMENT_DESC,
     pub NumElements: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_INPUT_LAYOUT_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_INPUT_LAYOUT_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_INPUT_LAYOUT_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_INPUT_LAYOUT_DESC")
@@ -56761,15 +57894,19 @@ impl ::core::fmt::Debug for D3D12_INPUT_LAYOUT_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_INPUT_LAYOUT_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_INPUT_LAYOUT_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.pInputElementDescs == other.pInputElementDescs && self.NumElements == other.NumElements
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_INPUT_LAYOUT_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_INPUT_LAYOUT_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -57115,6 +58252,7 @@ impl ::core::default::Default for D3D12_PACKED_MIP_INFO {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_PARAMETER_DESC {
     pub Name: ::windows::core::PCSTR,
     pub SemanticName: ::windows::core::PCSTR,
@@ -57129,12 +58267,15 @@ pub struct D3D12_PARAMETER_DESC {
     pub FirstOutRegister: u32,
     pub FirstOutComponent: u32,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_PARAMETER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_PARAMETER_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_PARAMETER_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_PARAMETER_DESC")
@@ -57153,9 +58294,11 @@ impl ::core::fmt::Debug for D3D12_PARAMETER_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_PARAMETER_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_PARAMETER_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Name == other.Name
@@ -57172,7 +58315,9 @@ impl ::core::cmp::PartialEq for D3D12_PARAMETER_DESC {
             && self.FirstOutComponent == other.FirstOutComponent
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_PARAMETER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_PARAMETER_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -57216,16 +58361,20 @@ impl ::core::default::Default for D3D12_PIPELINE_STATE_STREAM_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     pub Offset: u64,
     pub Footprint: D3D12_SUBRESOURCE_FOOTPRINT,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_PLACED_SUBRESOURCE_FOOTPRINT")
@@ -57234,15 +58383,19 @@ impl ::core::fmt::Debug for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     fn eq(&self, other: &Self) -> bool {
         self.Offset == other.Offset && self.Footprint == other.Footprint
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_PLACED_SUBRESOURCE_FOOTPRINT {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -57585,6 +58738,7 @@ impl ::core::default::Default for D3D12_RANGE_UINT64 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_RASTERIZER_DESC {
     pub FillMode: D3D12_FILL_MODE,
     pub CullMode: D3D12_CULL_MODE,
@@ -57598,12 +58752,15 @@ pub struct D3D12_RASTERIZER_DESC {
     pub ForcedSampleCount: u32,
     pub ConservativeRaster: D3D12_CONSERVATIVE_RASTERIZATION_MODE,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_RASTERIZER_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_RASTERIZER_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RASTERIZER_DESC")
@@ -57621,9 +58778,11 @@ impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_RASTERIZER_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.FillMode == other.FillMode
@@ -57639,13 +58798,16 @@ impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC {
             && self.ConservativeRaster == other.ConservativeRaster
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_RASTERIZER_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_RASTERIZER_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_RASTERIZER_DESC1 {
     pub FillMode: D3D12_FILL_MODE,
     pub CullMode: D3D12_CULL_MODE,
@@ -57659,12 +58821,15 @@ pub struct D3D12_RASTERIZER_DESC1 {
     pub ForcedSampleCount: u32,
     pub ConservativeRaster: D3D12_CONSERVATIVE_RASTERIZATION_MODE,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_RASTERIZER_DESC1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_RASTERIZER_DESC1 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC1 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RASTERIZER_DESC1")
@@ -57682,9 +58847,11 @@ impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC1 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_RASTERIZER_DESC1 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC1 {
     fn eq(&self, other: &Self) -> bool {
         self.FillMode == other.FillMode
@@ -57700,13 +58867,16 @@ impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC1 {
             && self.ConservativeRaster == other.ConservativeRaster
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_RASTERIZER_DESC1 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_RASTERIZER_DESC1 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_RASTERIZER_DESC2 {
     pub FillMode: D3D12_FILL_MODE,
     pub CullMode: D3D12_CULL_MODE,
@@ -57719,12 +58889,15 @@ pub struct D3D12_RASTERIZER_DESC2 {
     pub ForcedSampleCount: u32,
     pub ConservativeRaster: D3D12_CONSERVATIVE_RASTERIZATION_MODE,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_RASTERIZER_DESC2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_RASTERIZER_DESC2 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC2 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RASTERIZER_DESC2")
@@ -57741,9 +58914,11 @@ impl ::core::fmt::Debug for D3D12_RASTERIZER_DESC2 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_RASTERIZER_DESC2 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC2 {
     fn eq(&self, other: &Self) -> bool {
         self.FillMode == other.FillMode
@@ -57758,7 +58933,9 @@ impl ::core::cmp::PartialEq for D3D12_RASTERIZER_DESC2 {
             && self.ConservativeRaster == other.ConservativeRaster
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_RASTERIZER_DESC2 {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_RASTERIZER_DESC2 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -58139,45 +59316,56 @@ impl ::core::default::Default for D3D12_RAYTRACING_GEOMETRY_AABBS_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RAYTRACING_GEOMETRY_DESC {
     pub Type: D3D12_RAYTRACING_GEOMETRY_TYPE,
     pub Flags: D3D12_RAYTRACING_GEOMETRY_FLAGS,
     pub Anonymous: D3D12_RAYTRACING_GEOMETRY_DESC_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RAYTRACING_GEOMETRY_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RAYTRACING_GEOMETRY_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RAYTRACING_GEOMETRY_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RAYTRACING_GEOMETRY_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_RAYTRACING_GEOMETRY_DESC_0 {
     pub Triangles: D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC,
     pub AABBs: D3D12_RAYTRACING_GEOMETRY_AABBS_DESC,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RAYTRACING_GEOMETRY_DESC_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RAYTRACING_GEOMETRY_DESC_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RAYTRACING_GEOMETRY_DESC_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RAYTRACING_GEOMETRY_DESC_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     pub Transform3x4: u64,
     pub IndexFormat: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
@@ -58187,12 +59375,15 @@ pub struct D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     pub IndexBuffer: u64,
     pub VertexBuffer: D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC")
@@ -58206,9 +59397,11 @@ impl ::core::fmt::Debug for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Transform3x4 == other.Transform3x4
@@ -58220,7 +59413,9 @@ impl ::core::cmp::PartialEq for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
             && self.VertexBuffer == other.VertexBuffer
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -58365,56 +59560,71 @@ impl ::core::default::Default for D3D12_RAYTRACING_SHADER_CONFIG {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RENDER_PASS_BEGINNING_ACCESS {
     pub Type: D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE,
     pub Anonymous: D3D12_RENDER_PASS_BEGINNING_ACCESS_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RENDER_PASS_BEGINNING_ACCESS {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_BEGINNING_ACCESS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_BEGINNING_ACCESS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RENDER_PASS_BEGINNING_ACCESS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_RENDER_PASS_BEGINNING_ACCESS_0 {
     pub Clear: D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS,
     pub PreserveLocal: D3D12_RENDER_PASS_BEGINNING_ACCESS_PRESERVE_LOCAL_PARAMETERS,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RENDER_PASS_BEGINNING_ACCESS_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_BEGINNING_ACCESS_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_BEGINNING_ACCESS_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RENDER_PASS_BEGINNING_ACCESS_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS {
     pub ClearValue: D3D12_CLEAR_VALUE,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -58455,6 +59665,7 @@ impl ::core::default::Default for D3D12_RENDER_PASS_BEGINNING_ACCESS_PRESERVE_LO
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub struct D3D12_RENDER_PASS_DEPTH_STENCIL_DESC {
     pub cpuDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     pub DepthBeginningAccess: D3D12_RENDER_PASS_BEGINNING_ACCESS,
@@ -58462,50 +59673,61 @@ pub struct D3D12_RENDER_PASS_DEPTH_STENCIL_DESC {
     pub DepthEndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS,
     pub StencilEndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_DEPTH_STENCIL_DESC {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_DEPTH_STENCIL_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_RENDER_PASS_DEPTH_STENCIL_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub struct D3D12_RENDER_PASS_ENDING_ACCESS {
     pub Type: D3D12_RENDER_PASS_ENDING_ACCESS_TYPE,
     pub Anonymous: D3D12_RENDER_PASS_ENDING_ACCESS_0,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_ENDING_ACCESS {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_ENDING_ACCESS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_RENDER_PASS_ENDING_ACCESS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub union D3D12_RENDER_PASS_ENDING_ACCESS_0 {
     pub Resolve: ::std::mem::ManuallyDrop<D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS>,
     pub PreserveLocal: D3D12_RENDER_PASS_ENDING_ACCESS_PRESERVE_LOCAL_PARAMETERS,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_ENDING_ACCESS_0 {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_ENDING_ACCESS_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_RENDER_PASS_ENDING_ACCESS_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -58546,6 +59768,7 @@ impl ::core::default::Default for D3D12_RENDER_PASS_ENDING_ACCESS_PRESERVE_LOCAL
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub struct D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     pub pSrcResource: ::std::mem::ManuallyDrop<::core::option::Option<ID3D12Resource>>,
     pub pDstResource: ::std::mem::ManuallyDrop<::core::option::Option<ID3D12Resource>>,
@@ -58556,11 +59779,13 @@ pub struct D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     pub ResolveMode: D3D12_RESOLVE_MODE,
     pub PreserveResolveSource: ::windows::Win32::Foundation::BOOL,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::fmt::Debug for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS")
@@ -58574,9 +59799,11 @@ impl ::core::fmt::Debug for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
             .finish()
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::cmp::PartialEq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     fn eq(&self, other: &Self) -> bool {
         self.pSrcResource == other.pSrcResource
@@ -58588,13 +59815,16 @@ impl ::core::cmp::PartialEq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETE
             && self.PreserveResolveSource == other.PreserveResolveSource
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::cmp::Eq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {}
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     pub SrcSubresource: u32,
     pub DstSubresource: u32,
@@ -58602,12 +59832,15 @@ pub struct D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     pub DstY: u32,
     pub SrcRect: ::windows::Win32::Foundation::RECT,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS")
@@ -58619,9 +59852,11 @@ impl ::core::fmt::Debug for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     fn eq(&self, other: &Self) -> bool {
         self.SrcSubresource == other.SrcSubresource
@@ -58631,32 +59866,39 @@ impl ::core::cmp::PartialEq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOU
             && self.SrcRect == other.SrcRect
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 pub struct D3D12_RENDER_PASS_RENDER_TARGET_DESC {
     pub cpuDescriptor: D3D12_CPU_DESCRIPTOR_HANDLE,
     pub BeginningAccess: D3D12_RENDER_PASS_BEGINNING_ACCESS,
     pub EndingAccess: D3D12_RENDER_PASS_ENDING_ACCESS,
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::clone::Clone for D3D12_RENDER_PASS_RENDER_TARGET_DESC {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::windows::core::TypeKind for D3D12_RENDER_PASS_RENDER_TARGET_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(all(feature = "Win32_Foundation", feature = "Win32_Graphics_Dxgi_Common"))]
 impl ::core::default::Default for D3D12_RENDER_PASS_RENDER_TARGET_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_RENDER_TARGET_BLEND_DESC {
     pub BlendEnable: ::windows::Win32::Foundation::BOOL,
     pub LogicOpEnable: ::windows::Win32::Foundation::BOOL,
@@ -58669,12 +59911,15 @@ pub struct D3D12_RENDER_TARGET_BLEND_DESC {
     pub LogicOp: D3D12_LOGIC_OP,
     pub RenderTargetWriteMask: u8,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_RENDER_TARGET_BLEND_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_RENDER_TARGET_BLEND_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_RENDER_TARGET_BLEND_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RENDER_TARGET_BLEND_DESC")
@@ -58691,9 +59936,11 @@ impl ::core::fmt::Debug for D3D12_RENDER_TARGET_BLEND_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_RENDER_TARGET_BLEND_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_RENDER_TARGET_BLEND_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.BlendEnable == other.BlendEnable
@@ -58708,33 +59955,41 @@ impl ::core::cmp::PartialEq for D3D12_RENDER_TARGET_BLEND_DESC {
             && self.RenderTargetWriteMask == other.RenderTargetWriteMask
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_RENDER_TARGET_BLEND_DESC {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_RENDER_TARGET_BLEND_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RENDER_TARGET_VIEW_DESC {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub ViewDimension: D3D12_RTV_DIMENSION,
     pub Anonymous: D3D12_RENDER_TARGET_VIEW_DESC_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RENDER_TARGET_VIEW_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RENDER_TARGET_VIEW_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RENDER_TARGET_VIEW_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RENDER_TARGET_VIEW_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_RENDER_TARGET_VIEW_DESC_0 {
     pub Buffer: D3D12_BUFFER_RTV,
     pub Texture1D: D3D12_TEX1D_RTV,
@@ -58745,15 +60000,19 @@ pub union D3D12_RENDER_TARGET_VIEW_DESC_0 {
     pub Texture2DMSArray: D3D12_TEX2DMS_ARRAY_RTV,
     pub Texture3D: D3D12_TEX3D_RTV,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RENDER_TARGET_VIEW_DESC_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RENDER_TARGET_VIEW_DESC_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RENDER_TARGET_VIEW_DESC_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RENDER_TARGET_VIEW_DESC_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -58900,6 +60159,7 @@ impl ::core::default::Default for D3D12_RESOURCE_BARRIER_0 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RESOURCE_DESC {
     pub Dimension: D3D12_RESOURCE_DIMENSION,
     pub Alignment: u64,
@@ -58912,12 +60172,15 @@ pub struct D3D12_RESOURCE_DESC {
     pub Layout: D3D12_TEXTURE_LAYOUT,
     pub Flags: D3D12_RESOURCE_FLAGS,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RESOURCE_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RESOURCE_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_RESOURCE_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RESOURCE_DESC")
@@ -58934,9 +60197,11 @@ impl ::core::fmt::Debug for D3D12_RESOURCE_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RESOURCE_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_RESOURCE_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Dimension == other.Dimension
@@ -58951,13 +60216,16 @@ impl ::core::cmp::PartialEq for D3D12_RESOURCE_DESC {
             && self.Flags == other.Flags
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_RESOURCE_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RESOURCE_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RESOURCE_DESC1 {
     pub Dimension: D3D12_RESOURCE_DIMENSION,
     pub Alignment: u64,
@@ -58971,12 +60239,15 @@ pub struct D3D12_RESOURCE_DESC1 {
     pub Flags: D3D12_RESOURCE_FLAGS,
     pub SamplerFeedbackMipRegion: D3D12_MIP_REGION,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RESOURCE_DESC1 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RESOURCE_DESC1 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_RESOURCE_DESC1 {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RESOURCE_DESC1")
@@ -58994,9 +60265,11 @@ impl ::core::fmt::Debug for D3D12_RESOURCE_DESC1 {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RESOURCE_DESC1 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_RESOURCE_DESC1 {
     fn eq(&self, other: &Self) -> bool {
         self.Dimension == other.Dimension
@@ -59012,7 +60285,9 @@ impl ::core::cmp::PartialEq for D3D12_RESOURCE_DESC1 {
             && self.SamplerFeedbackMipRegion == other.SamplerFeedbackMipRegion
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_RESOURCE_DESC1 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RESOURCE_DESC1 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -59472,16 +60747,20 @@ impl ::core::default::Default for D3D12_ROOT_SIGNATURE_DESC2 {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_RT_FORMAT_ARRAY {
     pub RTFormats: [::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT; 8],
     pub NumRenderTargets: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_RT_FORMAT_ARRAY {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_RT_FORMAT_ARRAY {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_RT_FORMAT_ARRAY {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_RT_FORMAT_ARRAY")
@@ -59490,15 +60769,19 @@ impl ::core::fmt::Debug for D3D12_RT_FORMAT_ARRAY {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_RT_FORMAT_ARRAY {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_RT_FORMAT_ARRAY {
     fn eq(&self, other: &Self) -> bool {
         self.RTFormats == other.RTFormats && self.NumRenderTargets == other.NumRenderTargets
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_RT_FORMAT_ARRAY {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_RT_FORMAT_ARRAY {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -59728,6 +61011,7 @@ impl ::core::default::Default for D3D12_SERIALIZED_RAYTRACING_ACCELERATION_STRUC
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_SHADER_BUFFER_DESC {
     pub Name: ::windows::core::PCSTR,
     pub Type: ::windows::Win32::Graphics::Direct3D::D3D_CBUFFER_TYPE,
@@ -59735,12 +61019,15 @@ pub struct D3D12_SHADER_BUFFER_DESC {
     pub Size: u32,
     pub uFlags: u32,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_SHADER_BUFFER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_SHADER_BUFFER_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_SHADER_BUFFER_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SHADER_BUFFER_DESC")
@@ -59752,9 +61039,11 @@ impl ::core::fmt::Debug for D3D12_SHADER_BUFFER_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_SHADER_BUFFER_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_SHADER_BUFFER_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Name == other.Name
@@ -59764,7 +61053,9 @@ impl ::core::cmp::PartialEq for D3D12_SHADER_BUFFER_DESC {
             && self.uFlags == other.uFlags
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_SHADER_BUFFER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_SHADER_BUFFER_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -59859,6 +61150,7 @@ impl ::core::default::Default for D3D12_SHADER_CACHE_SESSION_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_SHADER_DESC {
     pub Version: u32,
     pub Creator: ::windows::core::PCSTR,
@@ -59899,12 +61191,15 @@ pub struct D3D12_SHADER_DESC {
     pub cInterlockedInstructions: u32,
     pub cTextureStoreInstructions: u32,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_SHADER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_SHADER_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_SHADER_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SHADER_DESC")
@@ -59952,9 +61247,11 @@ impl ::core::fmt::Debug for D3D12_SHADER_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_SHADER_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_SHADER_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Version == other.Version
@@ -59997,13 +61294,16 @@ impl ::core::cmp::PartialEq for D3D12_SHADER_DESC {
             && self.cTextureStoreInstructions == other.cTextureStoreInstructions
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_SHADER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_SHADER_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_SHADER_INPUT_BIND_DESC {
     pub Name: ::windows::core::PCSTR,
     pub Type: ::windows::Win32::Graphics::Direct3D::D3D_SHADER_INPUT_TYPE,
@@ -60016,12 +61316,15 @@ pub struct D3D12_SHADER_INPUT_BIND_DESC {
     pub Space: u32,
     pub uID: u32,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_SHADER_INPUT_BIND_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_SHADER_INPUT_BIND_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_SHADER_INPUT_BIND_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SHADER_INPUT_BIND_DESC")
@@ -60038,9 +61341,11 @@ impl ::core::fmt::Debug for D3D12_SHADER_INPUT_BIND_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_SHADER_INPUT_BIND_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_SHADER_INPUT_BIND_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Name == other.Name
@@ -60055,34 +61360,42 @@ impl ::core::cmp::PartialEq for D3D12_SHADER_INPUT_BIND_DESC {
             && self.uID == other.uID
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_SHADER_INPUT_BIND_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_SHADER_INPUT_BIND_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_SHADER_RESOURCE_VIEW_DESC {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub ViewDimension: D3D12_SRV_DIMENSION,
     pub Shader4ComponentMapping: u32,
     pub Anonymous: D3D12_SHADER_RESOURCE_VIEW_DESC_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_SHADER_RESOURCE_VIEW_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_SHADER_RESOURCE_VIEW_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_SHADER_RESOURCE_VIEW_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_SHADER_RESOURCE_VIEW_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_SHADER_RESOURCE_VIEW_DESC_0 {
     pub Buffer: D3D12_BUFFER_SRV,
     pub Texture1D: D3D12_TEX1D_SRV,
@@ -60096,21 +61409,26 @@ pub union D3D12_SHADER_RESOURCE_VIEW_DESC_0 {
     pub TextureCubeArray: D3D12_TEXCUBE_ARRAY_SRV,
     pub RaytracingAccelerationStructure: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_SHADER_RESOURCE_VIEW_DESC_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_SHADER_RESOURCE_VIEW_DESC_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_SHADER_RESOURCE_VIEW_DESC_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_SHADER_RESOURCE_VIEW_DESC_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_SHADER_TYPE_DESC {
     pub Class: ::windows::Win32::Graphics::Direct3D::D3D_SHADER_VARIABLE_CLASS,
     pub Type: ::windows::Win32::Graphics::Direct3D::D3D_SHADER_VARIABLE_TYPE,
@@ -60121,12 +61439,15 @@ pub struct D3D12_SHADER_TYPE_DESC {
     pub Offset: u32,
     pub Name: ::windows::core::PCSTR,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_SHADER_TYPE_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_SHADER_TYPE_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_SHADER_TYPE_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SHADER_TYPE_DESC")
@@ -60141,9 +61462,11 @@ impl ::core::fmt::Debug for D3D12_SHADER_TYPE_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_SHADER_TYPE_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_SHADER_TYPE_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.Class == other.Class
@@ -60156,7 +61479,9 @@ impl ::core::cmp::PartialEq for D3D12_SHADER_TYPE_DESC {
             && self.Name == other.Name
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_SHADER_TYPE_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_SHADER_TYPE_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -60218,6 +61543,7 @@ impl ::core::default::Default for D3D12_SHADER_VARIABLE_DESC {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub struct D3D12_SIGNATURE_PARAMETER_DESC {
     pub SemanticName: ::windows::core::PCSTR,
     pub SemanticIndex: u32,
@@ -60229,12 +61555,15 @@ pub struct D3D12_SIGNATURE_PARAMETER_DESC {
     pub Stream: u32,
     pub MinPrecision: ::windows::Win32::Graphics::Direct3D::D3D_MIN_PRECISION,
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::marker::Copy for D3D12_SIGNATURE_PARAMETER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::clone::Clone for D3D12_SIGNATURE_PARAMETER_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::fmt::Debug for D3D12_SIGNATURE_PARAMETER_DESC {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SIGNATURE_PARAMETER_DESC")
@@ -60250,9 +61579,11 @@ impl ::core::fmt::Debug for D3D12_SIGNATURE_PARAMETER_DESC {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::windows::core::TypeKind for D3D12_SIGNATURE_PARAMETER_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::PartialEq for D3D12_SIGNATURE_PARAMETER_DESC {
     fn eq(&self, other: &Self) -> bool {
         self.SemanticName == other.SemanticName
@@ -60266,7 +61597,9 @@ impl ::core::cmp::PartialEq for D3D12_SIGNATURE_PARAMETER_DESC {
             && self.MinPrecision == other.MinPrecision
     }
 }
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::cmp::Eq for D3D12_SIGNATURE_PARAMETER_DESC {}
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 impl ::core::default::Default for D3D12_SIGNATURE_PARAMETER_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -60711,6 +62044,7 @@ impl ::core::default::Default for D3D12_SUBRESOURCE_DATA {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_SUBRESOURCE_FOOTPRINT {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub Width: u32,
@@ -60718,12 +62052,15 @@ pub struct D3D12_SUBRESOURCE_FOOTPRINT {
     pub Depth: u32,
     pub RowPitch: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_SUBRESOURCE_FOOTPRINT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_SUBRESOURCE_FOOTPRINT {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::fmt::Debug for D3D12_SUBRESOURCE_FOOTPRINT {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_SUBRESOURCE_FOOTPRINT")
@@ -60735,9 +62072,11 @@ impl ::core::fmt::Debug for D3D12_SUBRESOURCE_FOOTPRINT {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_SUBRESOURCE_FOOTPRINT {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::PartialEq for D3D12_SUBRESOURCE_FOOTPRINT {
     fn eq(&self, other: &Self) -> bool {
         self.Format == other.Format
@@ -60747,7 +62086,9 @@ impl ::core::cmp::PartialEq for D3D12_SUBRESOURCE_FOOTPRINT {
             && self.RowPitch == other.RowPitch
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::cmp::Eq for D3D12_SUBRESOURCE_FOOTPRINT {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_SUBRESOURCE_FOOTPRINT {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -61964,38 +63305,47 @@ impl ::core::default::Default for D3D12_TEXTURE_BARRIER {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_TEXTURE_COPY_LOCATION {
     pub pResource: ::std::mem::ManuallyDrop<::core::option::Option<ID3D12Resource>>,
     pub Type: D3D12_TEXTURE_COPY_TYPE,
     pub Anonymous: D3D12_TEXTURE_COPY_LOCATION_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_TEXTURE_COPY_LOCATION {
     fn clone(&self) -> Self {
         unsafe { ::core::mem::transmute_copy(self) }
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_TEXTURE_COPY_LOCATION {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_TEXTURE_COPY_LOCATION {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_TEXTURE_COPY_LOCATION_0 {
     pub PlacedFootprint: D3D12_PLACED_SUBRESOURCE_FOOTPRINT,
     pub SubresourceIndex: u32,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_TEXTURE_COPY_LOCATION_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_TEXTURE_COPY_LOCATION_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_TEXTURE_COPY_LOCATION_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_TEXTURE_COPY_LOCATION_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -62042,6 +63392,7 @@ impl ::core::default::Default for D3D12_TILED_RESOURCE_COORDINATE {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Foundation")]
 pub struct D3D12_TILE_REGION_SIZE {
     pub NumTiles: u32,
     pub UseBox: ::windows::Win32::Foundation::BOOL,
@@ -62049,12 +63400,15 @@ pub struct D3D12_TILE_REGION_SIZE {
     pub Height: u16,
     pub Depth: u16,
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::marker::Copy for D3D12_TILE_REGION_SIZE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::clone::Clone for D3D12_TILE_REGION_SIZE {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::fmt::Debug for D3D12_TILE_REGION_SIZE {
     fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         f.debug_struct("D3D12_TILE_REGION_SIZE")
@@ -62066,9 +63420,11 @@ impl ::core::fmt::Debug for D3D12_TILE_REGION_SIZE {
             .finish()
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::windows::core::TypeKind for D3D12_TILE_REGION_SIZE {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::PartialEq for D3D12_TILE_REGION_SIZE {
     fn eq(&self, other: &Self) -> bool {
         self.NumTiles == other.NumTiles
@@ -62078,7 +63434,9 @@ impl ::core::cmp::PartialEq for D3D12_TILE_REGION_SIZE {
             && self.Depth == other.Depth
     }
 }
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::cmp::Eq for D3D12_TILE_REGION_SIZE {}
+#[cfg(feature = "Win32_Foundation")]
 impl ::core::default::Default for D3D12_TILE_REGION_SIZE {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -62122,26 +63480,32 @@ impl ::core::default::Default for D3D12_TILE_SHAPE {
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub struct D3D12_UNORDERED_ACCESS_VIEW_DESC {
     pub Format: ::windows::Win32::Graphics::Dxgi::Common::DXGI_FORMAT,
     pub ViewDimension: D3D12_UAV_DIMENSION,
     pub Anonymous: D3D12_UNORDERED_ACCESS_VIEW_DESC_0,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_UNORDERED_ACCESS_VIEW_DESC {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_UNORDERED_ACCESS_VIEW_DESC {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_UNORDERED_ACCESS_VIEW_DESC {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_UNORDERED_ACCESS_VIEW_DESC {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
     }
 }
 #[repr(C)]
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 pub union D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {
     pub Buffer: D3D12_BUFFER_UAV,
     pub Texture1D: D3D12_TEX1D_UAV,
@@ -62152,15 +63516,19 @@ pub union D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {
     pub Texture2DMSArray: D3D12_TEX2DMS_ARRAY_UAV,
     pub Texture3D: D3D12_TEX3D_UAV,
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::marker::Copy for D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {}
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::clone::Clone for D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {
     fn clone(&self) -> Self {
         *self
     }
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::windows::core::TypeKind for D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {
     type TypeKind = ::windows::core::CopyType;
 }
+#[cfg(feature = "Win32_Graphics_Dxgi_Common")]
 impl ::core::default::Default for D3D12_UNORDERED_ACCESS_VIEW_DESC_0 {
     fn default() -> Self {
         unsafe { ::core::mem::zeroed() }
@@ -62441,6 +63809,7 @@ pub type D3D12MessageFunc = ::core::option::Option<
         pcontext: *mut ::core::ffi::c_void,
     ) -> (),
 >;
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub type PFN_D3D12_CREATE_DEVICE = ::core::option::Option<
     unsafe extern "system" fn(
         param0: ::core::option::Option<::windows::core::IUnknown>,
@@ -62478,6 +63847,7 @@ pub type PFN_D3D12_GET_INTERFACE = ::core::option::Option<
         param2: *mut *mut ::core::ffi::c_void,
     ) -> ::windows::core::HRESULT,
 >;
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub type PFN_D3D12_SERIALIZE_ROOT_SIGNATURE = ::core::option::Option<
     unsafe extern "system" fn(
         prootsignature: *const D3D12_ROOT_SIGNATURE_DESC,
@@ -62486,6 +63856,7 @@ pub type PFN_D3D12_SERIALIZE_ROOT_SIGNATURE = ::core::option::Option<
         pperrorblob: *mut ::core::option::Option<::windows::Win32::Graphics::Direct3D::ID3DBlob>,
     ) -> ::windows::core::HRESULT,
 >;
+#[cfg(feature = "Win32_Graphics_Direct3D")]
 pub type PFN_D3D12_SERIALIZE_VERSIONED_ROOT_SIGNATURE = ::core::option::Option<
     unsafe extern "system" fn(
         prootsignature: *const D3D12_VERSIONED_ROOT_SIGNATURE_DESC,
